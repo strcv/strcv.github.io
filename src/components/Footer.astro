@@ -1,0 +1,44 @@
+---
+import { site } from '../site.config'
+const year = new Date().getFullYear()
+---
+
+<footer>
+  <div class="page bar">
+    <span class="small muted">© {year} {site.name}</span>
+    <span class="links small">
+      {
+        site.links.map((l) => (
+          <a href={l.href} rel="me noopener">
+            {l.label}
+          </a>
+        ))
+      }
+    </span>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-6);
+  }
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+    justify-content: space-between;
+  }
+  .links {
+    display: flex;
+    gap: var(--space-4);
+  }
+  .links a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--accent);
+  }
+</style>

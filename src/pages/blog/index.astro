@@ -1,0 +1,102 @@
+---
+import { getCollection } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+)
+
+const fmt = new Intl.DateTimeFormat('ru-RU', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
+
+const byYear = new Map<number, typeof posts>()
+for (const post of posts) {
+  const y = post.data.date.getFullYear()
+  byYear.set(y, [...(byYear.get(y) ?? []), post])
+}
+const years = [...byYear.keys()].sort((a, b) => b - a)
+---
+
+<Base title="Заметки" description="Тексты про разработку и вёрстку писем">
+  <h1>Заметки</h1>
+  <p class="muted lede">
+    Короткие тексты о том, что делаю: разработка, email-вёрстка, продукт.
+    <a href="/rss.xml">RSS</a>
+  </p>
+
+  {
+    years.map((year) => (
+      <section class="year">
+        <h2 class="mono">{year}</h2>
+        <ul>
+          {byYear.get(year)!.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}`}>
+                <span class="row">
+                  <span class="title">{post.data.title}</span>
+                  <time class="mono" datetime={post.data.date.toISOString()}>
+                    {fmt.format(post.data.date)}
+                  </time>
+                </span>
+                <span class="muted small">{post.data.description}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  {posts.length === 0 && <p class="muted">Пока пусто — первый текст в пути.</p>}
+</Base>
+
+<style>
+  .lede {
+    margin-top: var(--space-2);
+  }
+  .year {
+    margin-top: var(--space-12);
+  }
+  .year h2 {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+  }
+  ul a {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    margin-inline: calc(var(--space-3) * -1);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background var(--dur) var(--ease);
+  }
+  ul a:hover {
+    background: var(--bg-subtle);
+    color: inherit;
+  }
+  .row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .title {
+    font-weight: 550;
+  }
+  ul a:hover .title {
+    color: var(--accent);
+  }
+  time {
+    white-space: nowrap;
+  }
+</style>

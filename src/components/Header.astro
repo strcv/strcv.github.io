@@ -1,0 +1,71 @@
+---
+import { site } from '../site.config'
+import ThemeToggle from './ThemeToggle.astro'
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/'
+const nav = [
+  { href: '/', label: 'Главная' },
+  { href: '/projects', label: 'Проекты' },
+  { href: '/blog', label: 'Заметки' },
+]
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href)
+---
+
+<header>
+  <div class="page bar">
+    <a href="/" class="brand">{site.name}</a>
+    <nav aria-label="Основная навигация">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    padding-block: var(--space-3);
+  }
+  .brand {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    font-size: var(--text-sm);
+  }
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  nav a:hover {
+    color: var(--text);
+  }
+  nav a[aria-current='page'] {
+    color: var(--text);
+  }
+</style>

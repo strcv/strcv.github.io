@@ -1,0 +1,64 @@
+name: Сборка и публикация сайта
+
+# Сайт собирается и публикуется здесь же, в своём репозитории. Никаких токенов заводить
+# не нужно: публикация идёт штатными действиями GitHub, которым хватает разрешений ниже.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Минимум, который нужен публикации: прочитать код, записать Pages, получить OIDC-токен
+# для доверенной выкладки.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Одновременно катится один деплой. Новый пуш отменяет предыдущий: выкладывать
+# устаревшую сборку незачем.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: собрать
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # checkout и setup-node держим на v6: v7 вышли недавно, берём устоявшийся мажор.
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          # Версия одна с engines в package.json.
+          node-version: 22
+          cache: pnpm
+
+      # Строго по лок-файлу: расхождение с package.json должно валить сборку, а не молча
+      # тянуть другое дерево зависимостей.
+      - run: pnpm install --frozen-lockfile
+
+      # Проверка типов до сборки: так «сломались типы» видно отдельным красным шагом.
+      - run: pnpm typecheck
+
+      - run: pnpm build
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: опубликовать
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

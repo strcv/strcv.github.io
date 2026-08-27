@@ -1,0 +1,70 @@
+---
+---
+
+<button type="button" id="theme-toggle" aria-label="Переключить тему">
+  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+    <path
+      class="sun"
+      fill="currentColor"
+      d="M12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-13.5a1 1 0 0 1 1 1V6a1 1 0 1 1-2 0V4.5a1 1 0 0 1 1-1Zm0 15a1 1 0 0 1 1 1V21a1 1 0 1 1-2 0v-1.5a1 1 0 0 1 1-1ZM3.5 12a1 1 0 0 1 1-1H6a1 1 0 1 1 0 2H4.5a1 1 0 0 1-1-1Zm15 0a1 1 0 0 1 1-1H21a1 1 0 1 1 0 2h-1.5a1 1 0 0 1-1-1ZM5.8 5.8a1 1 0 0 1 1.4 0l1 1a1 1 0 1 1-1.4 1.4l-1-1a1 1 0 0 1 0-1.4Zm10 10a1 1 0 0 1 1.4 0l1 1a1 1 0 1 1-1.4 1.4l-1-1a1 1 0 0 1 0-1.4Zm2.4-10a1 1 0 0 1 0 1.4l-1 1a1 1 0 1 1-1.4-1.4l1-1a1 1 0 0 1 1.4 0Zm-10 10a1 1 0 0 1 0 1.4l-1 1a1 1 0 0 1-1.4-1.4l1-1a1 1 0 0 1 1.4 0Z"
+    ></path>
+    <path
+      class="moon"
+      fill="currentColor"
+      d="M21 13.2A9 9 0 1 1 10.8 3a7 7 0 0 0 10.2 10.2Z"></path>
+  </svg>
+</button>
+
+<style>
+  button {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+  button:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .moon {
+    display: none;
+  }
+  :global(:root[data-theme='dark']) .moon {
+    display: block;
+  }
+  :global(:root[data-theme='dark']) .sun {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .moon {
+      display: block;
+    }
+    :global(:root:not([data-theme='light'])) .sun {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.documentElement
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const current =
+      root.dataset.theme ??
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    const next = current === 'dark' ? 'light' : 'dark'
+    root.dataset.theme = next
+    try {
+      localStorage.setItem('theme', next)
+    } catch {
+      /* приватный режим — просто не запоминаем */
+    }
+  })
+</script>
