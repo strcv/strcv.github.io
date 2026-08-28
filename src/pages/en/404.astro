@@ -1,17 +1,17 @@
 ---
-import { dicts, localePath } from '../i18n'
-import Base from '../layouts/Base.astro'
+import { dicts, localePath } from '../../i18n'
+import Base from '../../layouts/Base.astro'
 
-const t = dicts.ru
+const t = dicts.en
 ---
 
-<Base lang="ru" neutralPath="/404/" title={t.notFound.title} description={t.notFound.body} noindex>
+<Base lang="en" neutralPath="/404/" title={t.notFound.title} description={t.notFound.body} noindex>
   <section class="nf">
     <div class="wrap wrap--wide">
       <p class="nf__n" aria-hidden="true">404</p>
       <h1 class="nf__t">{t.notFound.title}</h1>
       <p class="lead nf__b">{t.notFound.body}</p>
-      <a class="btn btn--primary nf__a" href={localePath('/', 'ru')}>{t.notFound.back}</a>
+      <a class="btn btn--primary nf__a" href={localePath('/', 'en')}>{t.notFound.back}</a>
     </div>
   </section>
 </Base>

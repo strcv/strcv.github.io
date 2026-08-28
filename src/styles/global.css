@@ -1,97 +1,50 @@
-/* ------------------------------------------------------------------
-   Дизайн-токены. Правило простое: в компонентах не пишем сырые цвета
-   и не пишем произвольные отступы — только переменные отсюда.
-   ------------------------------------------------------------------ */
+/* Токены — единственный источник цветов, отступов и размеров.
+   Сырых значений (#3b3b3b, padding: 13px) в компонентах быть не должно:
+   нужно новое значение — сначала добавь его в шкалу здесь. */
 
 :root {
-  /* Цвет: одна нейтральная шкала + один акцент. Больше акцентов не нужно. */
-  --bg: #fcfcfc;
-  --bg-subtle: #f4f4f5;
-  --surface: #ffffff;
-  --border: #e6e6e8;
-  --border-strong: #d3d3d7;
-  --text: #18181b;
-  --text-muted: #6f6f78;
-  --text-faint: #9a9aa3;
-  --accent: #3a5bd9;
-  --accent-hover: #2c48b8;
-  --accent-soft: #eaeeff;
-  --selection: #d9e1ff;
+  --bg: #08090c; /* фон, не чистый чёрный */
+  --bg-2: #0e1015; /* подложка секции */
+  --surface: #13151b; /* карточка, плитка */
+  --line: #1e212a;
+  --line-2: #2c3140; /* граница в hover */
+  --text: #edeef2; /* не чистый белый */
+  --muted: #9ba1ae;
+  /* Метки, номера разделов, периоды. В ТЗ здесь стоял #666D7C, но он даёт
+     3.83:1 на фоне и 3.51:1 на плитке — ниже 4.5:1, которых требует чек-лист
+     приёмки того же ТЗ. Взят ближайший тон, проходящий на всех трёх фонах:
+     5.17 на --bg, 4.94 на --bg-2, 4.74 на --surface. */
+  --dim: #7b8292;
+  --accent: #7c6bff;
+  --accent-2: #9b8eff; /* hover — светлее */
+  --accent-soft: #171633;
+  --ok: #4ade80; /* галочки в разделе 05 */
+  --no: #f87171; /* крестики в разделе 05 */
 
-  /* Шрифты */
-  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Inter',
-    'Segoe UI', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Menlo', monospace;
+  /* Шрифты системные: внешние CDN не подключаем, своего файла не хостим. */
+  --font: 'Inter', ui-sans-serif, -apple-system, system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  /* Типографическая шкала — шаг 1.25, ничего между значениями не выдумываем */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.375rem;
-  --text-2xl: 1.75rem;
-  --text-3xl: 2.25rem;
+  --page: 52rem;
+  --wide: 68rem;
+  --measure: 66ch;
 
-  /* Отступы — шкала на базе 4px */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-  --space-24: 6rem;
-
-  --radius: 8px;
-  --radius-lg: 14px;
-
-  --measure: 66ch; /* длина строки текста */
-  --page: 44rem;   /* ширина колонки страницы */
-
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s6: 1.5rem;
+  --s8: 2rem;
+  --s12: 3rem;
+  --s16: 4rem;
+  --s24: 6rem;
+  --radius: 12px;
+  --radius-lg: 16px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --dur: 180ms;
-}
 
-:root:not([data-theme='light']) {
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --bg: #0b0b0d;
-    --bg-subtle: #131316;
-    --surface: #141417;
-    --border: #232327;
-    --border-strong: #33333a;
-    --text: #ededf0;
-    --text-muted: #a0a0aa;
-    --text-faint: #6d6d78;
-    --accent: #8fa6ff;
-    --accent-hover: #aabaff;
-    --accent-soft: #1a1e35;
-    --selection: #2b3358;
-  }
-}
-
-:root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #0b0b0d;
-  --bg-subtle: #131316;
-  --surface: #141417;
-  --border: #232327;
-  --border-strong: #33333a;
-  --text: #ededf0;
-  --text-muted: #a0a0aa;
-  --text-faint: #6d6d78;
-  --accent: #8fa6ff;
-  --accent-hover: #aabaff;
-  --accent-soft: #1a1e35;
-  --selection: #2b3358;
 }
-
-/* ------------------------------------------------------------------ */
 
 *,
 *::before,
@@ -99,155 +52,170 @@
   box-sizing: border-box;
 }
 
-* {
-  margin: 0;
-}
-
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
 }
 
 body {
+  margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
+  font-family: var(--font);
+  font-size: 17px;
   line-height: 1.65;
+  font-synthesis-weight: none;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-::selection {
-  background: var(--selection);
+  /* Страховка от горизонтальной прокрутки на узких экранах. */
+  overflow-x: hidden;
 }
 
 h1,
 h2,
 h3,
-h4 {
-  line-height: 1.25;
-  letter-spacing: -0.018em;
-  font-weight: 620;
-  text-wrap: balance;
+p,
+ul,
+ol,
+figure {
+  margin: 0;
 }
 
-h1 {
-  font-size: var(--text-3xl);
-}
-h2 {
-  font-size: var(--text-xl);
-}
-h3 {
-  font-size: var(--text-lg);
-}
-
-p {
-  max-width: var(--measure);
-  text-wrap: pretty;
+ul,
+ol {
+  padding: 0;
+  list-style: none;
 }
 
 a {
   color: inherit;
-  text-decoration-color: var(--border-strong);
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-  transition: color var(--dur) var(--ease),
-    text-decoration-color var(--dur) var(--ease);
-}
-
-a:hover {
-  color: var(--accent);
-  text-decoration-color: var(--accent);
-}
-
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 3px;
+  text-decoration: none;
 }
 
 img,
-svg,
-video {
+svg {
   display: block;
   max-width: 100%;
-  height: auto;
 }
 
-code,
-pre,
-kbd {
-  font-family: var(--font-mono);
-  font-size: 0.9em;
+::selection {
+  background: var(--accent-soft);
+  color: var(--text);
 }
 
-:not(pre) > code {
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 0.1em 0.35em;
+/* Фокус виден всегда. outline:none без замены — нигде. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--s1);
 }
 
-pre {
-  padding: var(--space-4);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  overflow-x: auto;
-  line-height: 1.55;
-}
+/* ─────────────────────────── раскладка ─────────────────────────── */
 
-hr {
-  border: 0;
-  border-top: 1px solid var(--border);
-  margin: var(--space-12) 0;
-}
-
-/* Утилиты, которых хватает на весь сайт */
-
-.page {
+.wrap {
   width: 100%;
   max-width: var(--page);
   margin-inline: auto;
-  padding-inline: var(--space-6);
+  padding-inline: var(--s6);
 }
 
-.stack > * + * {
-  margin-top: var(--space-4);
+.wrap--wide {
+  max-width: var(--wide);
 }
 
-.muted {
-  color: var(--text-muted);
+/* Длина строки 60–75 знаков: за это отвечает --measure. */
+.measure {
+  max-width: var(--measure);
 }
 
-.small {
-  font-size: var(--text-sm);
+.lead {
+  color: var(--muted);
+  max-width: var(--measure);
 }
 
-.mono {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 0.02em;
-  color: var(--text-faint);
-  text-transform: uppercase;
+.dim {
+  color: var(--dim);
 }
 
-.section {
-  margin-top: var(--space-16);
+/* Видимая заглушка: адрес или факт, который владелец ещё не прислал.
+   Специально заметна — раздел 6 ТЗ требует, чтобы было видно, что дописать. */
+.todo {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--dim);
+  border: 1px dashed var(--line-2);
+  border-radius: var(--s1);
+  padding: 0 var(--s2);
+  white-space: nowrap;
 }
 
-.section > h2 {
-  margin-bottom: var(--space-6);
+/* ─────────────────────────── кнопки ─────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  /* Цель нажатия на телефоне не меньше 44×44. */
+  min-height: 44px;
+  padding: var(--s2) var(--s4);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: transform var(--dur) var(--ease);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0b0a1a;
+  font-weight: 600;
+}
+
+.btn--primary:hover {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+}
+
+/* Кнопка без адреса: вести ей некуда, поэтому она не ссылка и не кликается. */
+.btn--todo {
+  color: var(--muted);
+  cursor: default;
+}
+
+.btn--todo:hover {
+  transform: none;
+}
+
+/* ─────────────────────────── прочее ─────────────────────────── */
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+
+.skip:focus {
+  left: var(--s4);
+  top: var(--s4);
+  z-index: 20;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: var(--s2) var(--s4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

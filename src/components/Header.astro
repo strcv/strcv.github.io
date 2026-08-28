@@ -1,71 +1,130 @@
 ---
-import { site } from '../site.config'
-import ThemeToggle from './ThemeToggle.astro'
+// Шапка: слева имя, справа переключатель языка и «Написать».
+// Переключатель — обычные ссылки на тот же документ на другом языке, JS не нужен.
 
-const path = Astro.url.pathname.replace(/\/$/, '') || '/'
-const nav = [
-  { href: '/', label: 'Главная' },
-  { href: '/projects', label: 'Проекты' },
-  { href: '/blog', label: 'Заметки' },
-]
-const isActive = (href: string) =>
-  href === '/' ? path === '/' : path.startsWith(href)
+import { type Dict, type Lang, localePath } from '../i18n'
+
+interface Props {
+  lang: Lang
+  dict: Dict
+  /** Путь без языкового префикса: '/' или '/cases/marsbase-otc/'. */
+  neutralPath: string
+}
+
+const { lang, dict, neutralPath } = Astro.props
 ---
 
-<header>
-  <div class="page bar">
-    <a href="/" class="brand">{site.name}</a>
-    <nav aria-label="Основная навигация">
-      {
-        nav.map((item) => (
-          <a
-            href={item.href}
-            aria-current={isActive(item.href) ? 'page' : undefined}
-          >
-            {item.label}
-          </a>
-        ))
-      }
-      <ThemeToggle />
-    </nav>
+<header class="top">
+  <div class="wrap wrap--wide inner">
+    <a class="name" href={localePath('/', lang)}>{dict.nav.home}</a>
+
+    <div class="right">
+      <nav class="lang" aria-label={dict.nav.langLabel}>
+        <a
+          class:list={['lang__i', { 'is-on': lang === 'ru' }]}
+          href={localePath(neutralPath, 'ru')}
+          hreflang="ru"
+          lang="ru"
+          aria-current={lang === 'ru' ? 'true' : undefined}>RU</a
+        >
+        <span class="lang__sep" aria-hidden="true">/</span>
+        <a
+          class:list={['lang__i', { 'is-on': lang === 'en' }]}
+          href={localePath(neutralPath, 'en')}
+          hreflang="en"
+          lang="en"
+          aria-current={lang === 'en' ? 'true' : undefined}>EN</a
+        >
+      </nav>
+
+      <a class="write" href="mailto:insider2la@gmail.com">{dict.nav.write}</a>
+    </div>
   </div>
 </header>
 
 <style>
-  header {
-    border-bottom: 1px solid var(--border);
-    background: color-mix(in srgb, var(--bg) 85%, transparent);
-    backdrop-filter: blur(8px);
+  .top {
     position: sticky;
     top: 0;
-    z-index: 5;
+    z-index: 10;
+    height: 64px;
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
   }
-  .bar {
+
+  .inner {
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-6);
-    padding-block: var(--space-3);
+    gap: var(--s4);
   }
-  .brand {
+
+  .name {
     font-weight: 600;
     letter-spacing: -0.01em;
-    text-decoration: none;
+    /* На узком экране имя ужимается первым, кнопка связи остаётся целой. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  nav {
+
+  .right {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
-    font-size: var(--text-sm);
+    gap: var(--s4);
+    flex: 0 0 auto;
   }
-  nav a {
-    color: var(--text-muted);
-    text-decoration: none;
+
+  .lang {
+    display: flex;
+    align-items: center;
+    gap: var(--s1);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
   }
-  nav a:hover {
+
+  .lang__i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    min-height: 44px;
+    color: var(--dim);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .lang__i:hover,
+  .lang__i.is-on {
     color: var(--text);
   }
-  nav a[aria-current='page'] {
-    color: var(--text);
+
+  .lang__sep {
+    color: var(--line-2);
+  }
+
+  .write {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: var(--s4);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .write:hover {
+    border-color: var(--accent);
+  }
+
+  @media (max-width: 30rem) {
+    .write {
+      padding-inline: var(--s3);
+    }
   }
 </style>

@@ -1,0 +1,602 @@
+---
+// Одна длинная главная с пронумерованными разделами 01–10.
+// Порядок разделов задан в docs/tz.md и меняться не должен.
+// Разметка общая для обоих языков — различаются только словари.
+
+import { dicts, type Lang, localePath } from '../i18n'
+import ActionLink from './ActionLink.astro'
+import Section from './Section.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = dicts[lang]
+---
+
+<!-- 01. Первый экран -->
+<section class="hero" id="hero">
+  <div class="wrap wrap--wide">
+    <div class="hero__head">
+      <span class="hero__n" aria-hidden="true">01</span>
+      <p class="hero__name">{t.hero.name}</p>
+    </div>
+    <h1 class="hero__h">{t.hero.headline}</h1>
+    <p class="hero__lead">{t.hero.lead}</p>
+    <div class="hero__actions">
+      {t.hero.actions.map((link, i) => <ActionLink link={link} primary={i === 0} />)}
+    </div>
+  </div>
+</section>
+
+<!-- 02. Цифры -->
+<Section n={t.stats.n} title={t.stats.title} id="stats" wide>
+  <ul class="tiles">
+    {
+      t.stats.items.map((s) => (
+        <li class="tile">
+          <span class="tile__v">{s.value}</span>
+          <span class="tile__l">{s.label}</span>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="tiles__note dim">{t.stats.note}</p>
+</Section>
+
+<!-- 03. Что я умею -->
+<Section n={t.skills.n} title={t.skills.title} id="skills" wide>
+  <div class="stack">
+    {
+      t.skills.items.map((item) => (
+        <article class="block">
+          <h3 class="block__t">{item.title}</h3>
+          <p class="block__b measure">{item.body}</p>
+        </article>
+      ))
+    }
+  </div>
+</Section>
+
+<!-- 04. Как я работаю -->
+<Section n={t.principles.n} title={t.principles.title} id="principles" wide>
+  <div class="stack">
+    {
+      t.principles.items.map((item) => (
+        <article class="block">
+          <h3 class="block__t">{item.title}</h3>
+          <p class="block__b measure">{item.body}</p>
+        </article>
+      ))
+    }
+  </div>
+</Section>
+
+<!-- 05. С кем мне по пути -->
+<Section n={t.fit.n} title={t.fit.title} id="fit" wide alt>
+  <div class="fit">
+    <div>
+      <h3 class="fit__t">{t.fit.goodTitle}</h3>
+      <ul class="fit__l">
+        {
+          t.fit.good.map((line) => (
+            <li>
+              <span class="mark mark--ok" aria-hidden="true">
+                ✓
+              </span>
+              <span>{line}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div>
+      <h3 class="fit__t">{t.fit.badTitle}</h3>
+      <ul class="fit__l">
+        {
+          t.fit.bad.map((line) => (
+            <li>
+              <span class="mark mark--no" aria-hidden="true">
+                ✕
+              </span>
+              <span>{line}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</Section>
+
+<!-- 06. Со мной можно работать -->
+<Section n={t.services.n} title={t.services.title} id="services" wide>
+  <p class="lead services__lead">{t.services.lead}</p>
+  <div class="stack">
+    {
+      t.services.items.map((item) => (
+        <article class="block">
+          <h3 class="block__t">{item.title}</h3>
+          <p class="block__b measure">{item.body}</p>
+        </article>
+      ))
+    }
+  </div>
+  <div class="services__cta">
+    <ActionLink link={t.services.cta} primary />
+  </div>
+</Section>
+
+<!-- 07. Кейсы -->
+<Section n={t.cases.n} title={t.cases.title} id="cases" wide>
+  <ul class="cards">
+    {
+      t.cases.items.map((c) => (
+        <li>
+          <a class="card" href={localePath(`/cases/${c.slug}/`, lang)}>
+            <h3 class="card__t">{c.title}</h3>
+            {c.meta && <p class="card__m dim">{c.meta}</p>}
+            <p class="card__s">{c.summary}</p>
+            <span class="card__more" aria-hidden="true">
+              {t.cases.more} →
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<!-- 08. Опыт -->
+<Section n={t.experience.n} title={t.experience.title} id="experience" wide>
+  <table class="cv">
+    <caption class="sr">{t.experience.title}</caption>
+    <thead class="sr">
+      <tr>
+        <th scope="col">{t.experience.colPeriod}</th>
+        <th scope="col">{t.experience.colCompany}</th>
+        <th scope="col">{t.experience.colRole}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        t.experience.rows.map((r) => (
+          <tr>
+            <td class="cv__p">{r.period}</td>
+            <td class="cv__c">{r.company}</td>
+            <td class="cv__r">{r.role}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <p class="cv__edu">{t.experience.education}</p>
+  <ul class="cv__links">
+    {
+      t.experience.links.map((l) => (
+        <li>
+          {l.href ? (
+            <a class="ext" href={l.href} rel="noopener" target="_blank">
+              {l.label}
+            </a>
+          ) : (
+            <span class="ext ext--todo">
+              {l.label} <span class="todo">{l.todo}</span>
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<!-- 09. Пет-проекты -->
+<Section n={t.pets.n} title={t.pets.title} id="pets" wide>
+  <p class="lead services__lead">{t.pets.lead}</p>
+  <div class="stack">
+    {
+      t.pets.items.map((item) => (
+        <article class="block">
+          <h3 class="block__t">{item.title}</h3>
+          <p class="block__b measure">{item.body}</p>
+        </article>
+      ))
+    }
+  </div>
+</Section>
+
+<!-- 10. Контакты -->
+<Section n={t.contacts.n} title={t.contacts.title} id="contacts" wide>
+  <p class="lead services__lead">{t.contacts.lead}</p>
+  <ul class="contacts">
+    {
+      t.contacts.items.map((l) => (
+        <li class="contacts__i">
+          <span class="contacts__k dim">{l.label}</span>
+          {l.href ? (
+            <a class="contacts__v" href={l.href} rel="noopener">
+              {l.note ?? l.label}
+            </a>
+          ) : (
+            <>
+              <span class="todo">{l.todo}</span>
+              {l.note && <span class="contacts__n dim">{l.note}</span>}
+            </>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  /* ─── 01. Первый экран ─── */
+
+  .hero {
+    position: relative;
+    padding-top: var(--s24);
+    padding-bottom: var(--s16);
+  }
+
+  /* Единственный градиент на весь сайт. Больше нигде. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      900px 500px at 75% -15%,
+      rgba(124, 107, 255, 0.16),
+      transparent 60%
+    );
+  }
+
+  .hero > :global(.wrap) {
+    position: relative;
+  }
+
+  .hero__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s4);
+  }
+
+  .hero__n {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    flex: 0 0 auto;
+    min-width: 2.5ch;
+  }
+
+  .hero__name {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .hero__h {
+    margin-top: var(--s4);
+    font-size: clamp(2.75rem, 7vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 650;
+    max-width: 18ch;
+  }
+
+  .hero__lead {
+    margin-top: var(--s6);
+    max-width: var(--measure);
+    color: var(--muted);
+  }
+
+  .hero__actions {
+    margin-top: var(--s8);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s3);
+  }
+
+  /* ─── 02. Цифры ─── */
+
+  .tiles {
+    display: grid;
+    /* 17rem, а не меньше: при более узкой колонке «$10 млн+» разрывается пополам. */
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: var(--s4);
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: var(--s6);
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .tile:hover {
+    border-color: var(--line-2);
+  }
+
+  .tile__v {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    /* Цифра — одно целое: «$10 млн+» и «500 000» не разрываются переносом. */
+    white-space: nowrap;
+  }
+
+  .tile__l {
+    color: var(--muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .tiles__note {
+    margin-top: var(--s4);
+    font-size: 0.875rem;
+  }
+
+  /* ─── 03, 04, 06, 09. Текстовые блоки ─── */
+
+  .stack {
+    display: grid;
+    gap: var(--s8);
+  }
+
+  .block__t {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .block__b {
+    margin-top: var(--s2);
+    color: var(--muted);
+  }
+
+  .services__lead {
+    margin-bottom: var(--s8);
+  }
+
+  .services__cta {
+    margin-top: var(--s8);
+  }
+
+  /* ─── 05. С кем мне по пути ─── */
+
+  .fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: var(--s8) var(--s12);
+  }
+
+  .fit__t {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin-bottom: var(--s4);
+  }
+
+  .fit__l {
+    display: grid;
+    gap: var(--s3);
+  }
+
+  .fit__l li {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    align-items: start;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .mark {
+    font-weight: 600;
+  }
+
+  .mark--ok {
+    color: var(--ok);
+  }
+
+  .mark--no {
+    color: var(--no);
+  }
+
+  /* ─── 07. Кейсы ─── */
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: var(--s4);
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: var(--s6);
+    transition:
+      border-color var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+
+  .card:hover {
+    border-color: var(--line-2);
+    transform: translateY(-2px);
+  }
+
+  .card__t {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .card__m {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+
+  .card__s {
+    color: var(--muted);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .card__more {
+    margin-top: auto;
+    padding-top: var(--s3);
+    color: var(--accent-2);
+    font-size: 0.875rem;
+  }
+
+  /* ─── 08. Опыт ─── */
+
+  .cv {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  .cv td {
+    padding: var(--s3) var(--s4) var(--s3) 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: baseline;
+  }
+
+  .cv tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .cv__p {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--dim);
+    white-space: nowrap;
+    width: 1%;
+  }
+
+  .cv__c {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .cv__r {
+    color: var(--muted);
+  }
+
+  .cv__edu {
+    margin-top: var(--s6);
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  .cv__links {
+    margin-top: var(--s4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s6);
+    font-size: 0.9375rem;
+  }
+
+  .ext {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    min-height: 44px;
+    color: var(--accent-2);
+  }
+
+  .ext--todo {
+    color: var(--muted);
+  }
+
+  /* ─── 10. Контакты ─── */
+
+  .contacts {
+    display: grid;
+    gap: var(--s2);
+  }
+
+  .contacts__i {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2) var(--s4);
+    min-height: 44px;
+  }
+
+  .contacts__k {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    min-width: 8ch;
+  }
+
+  .contacts__v {
+    color: var(--accent-2);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .contacts__v:hover {
+    color: var(--text);
+  }
+
+  .contacts__n {
+    font-size: 0.875rem;
+  }
+
+  /* Заголовки таблицы нужны скринридеру, но не глазу. */
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 34rem) {
+    .cv,
+    .cv tbody,
+    .cv tr,
+    .cv td {
+      display: block;
+      width: auto;
+    }
+
+    .cv tr {
+      padding-block: var(--s3);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cv tr:last-child {
+      border-bottom: 0;
+    }
+
+    .cv td {
+      padding: 0;
+      border-bottom: 0;
+      white-space: normal;
+    }
+
+    .cv__p {
+      margin-bottom: var(--s1);
+    }
+  }
+</style>

@@ -1,0 +1,33 @@
+---
+// Ссылка, у которой может не быть адреса. Пока владелец не прислал ссылку,
+// это не «битая ссылка», а видимая заглушка — кликнуть по ней нельзя.
+
+import type { Link } from '../i18n'
+
+interface Props {
+  link: Link
+  primary?: boolean
+}
+
+const { link, primary = false } = Astro.props
+const rel = link.external ? 'noopener' : undefined
+const target = link.external ? '_blank' : undefined
+---
+
+{
+  link.href ? (
+    <a
+      class:list={['btn', { 'btn--primary': primary }]}
+      href={link.href}
+      rel={rel}
+      target={target}
+    >
+      {link.label}
+    </a>
+  ) : (
+    <span class="btn btn--todo">
+      {link.label}
+      <span class="todo">{link.todo}</span>
+    </span>
+  )
+}

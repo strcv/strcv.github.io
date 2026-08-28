@@ -1,0 +1,88 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { render } from 'astro:content'
+import { dicts, type Lang, localePath } from '../i18n'
+
+interface Props {
+  lang: Lang
+  entry: CollectionEntry<'cases'>
+}
+
+const { lang, entry } = Astro.props
+const t = dicts[lang]
+const { Content } = await render(entry)
+---
+
+<article class="case">
+  <div class="wrap wrap--wide">
+    <a class="back" href={localePath('/#cases', lang)}>← {t.cases.back}</a>
+    <h1 class="case__t">{entry.data.title}</h1>
+    {entry.data.meta && <p class="case__m">{entry.data.meta}</p>}
+    <div class="prose">
+      <Content />
+    </div>
+  </div>
+</article>
+
+<style>
+  .case {
+    padding-top: var(--s16);
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .back:hover {
+    color: var(--text);
+  }
+
+  .case__t {
+    margin-top: var(--s4);
+    font-size: clamp(1.875rem, 4.5vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    font-weight: 650;
+    max-width: 22ch;
+  }
+
+  .case__m {
+    margin-top: var(--s3);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--dim);
+  }
+
+  .prose {
+    margin-top: var(--s12);
+    padding-top: var(--s8);
+    border-top: 1px solid var(--line);
+  }
+
+  .prose :global(h2) {
+    font-size: 0.75rem;
+    font-family: var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-weight: 500;
+  }
+
+  .prose :global(h2:not(:first-child)) {
+    margin-top: var(--s12);
+  }
+
+  .prose :global(p) {
+    margin-top: var(--s3);
+    max-width: var(--measure);
+    color: var(--muted);
+  }
+</style>

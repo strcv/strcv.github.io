@@ -1,44 +1,43 @@
 ---
-import { site } from '../site.config'
+import type { Dict } from '../i18n'
+
+interface Props {
+  dict: Dict
+}
+
+const { dict } = Astro.props
 const year = new Date().getFullYear()
 ---
 
-<footer>
-  <div class="page bar">
-    <span class="small muted">© {year} {site.name}</span>
-    <span class="links small">
-      {
-        site.links.map((l) => (
-          <a href={l.href} rel="me noopener">
-            {l.label}
-          </a>
-        ))
-      }
-    </span>
+<footer class="foot">
+  <div class="wrap wrap--wide bar">
+    <span>© {year} {dict.footer.note}</span>
+    <a href="mailto:insider2la@gmail.com">insider2la@gmail.com</a>
   </div>
 </footer>
 
 <style>
-  footer {
-    border-top: 1px solid var(--border);
-    padding-block: var(--space-6);
+  .foot {
+    margin-top: var(--s24);
+    border-top: 1px solid var(--line);
+    padding-block: var(--s8);
+    color: var(--dim);
+    font-size: 0.9375rem;
   }
+
   .bar {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-4);
+    gap: var(--s3) var(--s6);
     align-items: center;
     justify-content: space-between;
   }
-  .links {
-    display: flex;
-    gap: var(--space-4);
+
+  .bar a {
+    transition: color var(--dur) var(--ease);
   }
-  .links a {
-    color: var(--text-muted);
-    text-decoration: none;
-  }
-  .links a:hover {
-    color: var(--accent);
+
+  .bar a:hover {
+    color: var(--text);
   }
 </style>

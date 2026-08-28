@@ -1,30 +1,16 @@
-import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { glob } from 'astro/loaders'
+import { defineCollection, z } from 'astro:content'
 
-const blog = defineCollection({
-  loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+// Кейсы — парные файлы: src/content/cases/<язык>/<адрес>.md.
+// Идентификатор записи получается вида 'ru/marsbase-otc', по нему и разбираем язык.
+const cases = defineCollection({
+  loader: glob({ base: './src/content/cases', pattern: '**/*.md' }),
   schema: z.object({
     title: z.string(),
-    description: z.string(),
-    date: z.coerce.date(),
-    tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(false),
-  }),
-});
-
-const projects = defineCollection({
-  loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
-    title: z.string(),
-    summary: z.string(),
-    role: z.string(),
-    year: z.string(),
-    stack: z.array(z.string()).default([]),
-    url: z.string().url().optional(),
-    repo: z.string().url().optional(),
-    featured: z.boolean().default(false),
+    /** Компания и период. Иногда это ещё заглушка вида «[уточнить: …]». */
+    meta: z.string().optional(),
     order: z.number().default(100),
   }),
-});
+})
 
-export const collections = { blog, projects };
+export const collections = { cases }

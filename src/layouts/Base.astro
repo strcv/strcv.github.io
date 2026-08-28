@@ -1,82 +1,88 @@
 ---
 import '../styles/global.css'
-import { site } from '../site.config'
-import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import { dicts, type Lang, languages, localePath } from '../i18n'
 
 interface Props {
+  lang: Lang
+  /** Путь без языкового префикса: '/' или '/cases/marsbase-otc/'. */
+  neutralPath: string
+  /** Заголовок страницы. Для главной не передаётся — берётся из словаря. */
   title?: string
   description?: string
+  /** Убрать из индексации: страница 404. */
+  noindex?: boolean
 }
 
-const { title, description = site.tagline } = Astro.props
-const pageTitle = title ? `${title} — ${site.name}` : site.title
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'http://localhost')
+const { lang, neutralPath, title, description, noindex = false } = Astro.props
+const dict = dicts[lang]
+
+const pageTitle = title ? `${title} — ${dict.hero.name}` : dict.meta.title
+const pageDescription = description ?? dict.meta.description
+
+const origin = Astro.site ?? new URL('http://localhost:4321')
+const canonical = new URL(localePath(neutralPath, lang), origin)
+const ogImage = new URL(lang === 'ru' ? '/og.png' : '/og-en.png', origin)
 ---
 
 <!doctype html>
-<html lang="ru">
+<html lang={dict.lang} dir={dict.dir}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonical.href} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    {
+      languages.map((l) => (
+        <link
+          rel="alternate"
+          hreflang={l}
+          href={new URL(localePath(neutralPath, l), origin).href}
+        />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(localePath(neutralPath, 'ru'), origin).href}
+    />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={dict.hero.name} />
+    <meta property="og:locale" content={lang === 'ru' ? 'ru_RU' : 'en_US'} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={dict.meta.ogAlt} />
     <meta name="twitter:card" content="summary_large_image" />
-
-    <!-- Тема ставится до первой отрисовки, чтобы не было вспышки -->
-    <script is:inline>
-      const stored = (() => {
-        try {
-          return localStorage.getItem('theme')
-        } catch {
-          return null
-        }
-      })()
-      if (stored === 'dark' || stored === 'light') {
-        document.documentElement.dataset.theme = stored
-      }
-    </script>
   </head>
 
   <body>
-    <a href="#main" class="skip">К содержимому</a>
-    <Header />
-    <main id="main" class="page">
+    <a href="#main" class="skip">{dict.skipToContent}</a>
+    <Header lang={lang} dict={dict} neutralPath={neutralPath} />
+    <main id="main">
       <slot />
     </main>
-    <Footer />
-
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100dvh;
-      }
-      main {
-        flex: 1;
-        padding-block: var(--space-16) var(--space-24);
-      }
-      .skip {
-        position: absolute;
-        left: -9999px;
-      }
-      .skip:focus {
-        left: var(--space-4);
-        top: var(--space-4);
-        background: var(--surface);
-        border: 1px solid var(--border);
-        padding: var(--space-2) var(--space-4);
-        border-radius: var(--radius);
-        z-index: 10;
-      }
-    </style>
+    <Footer dict={dict} />
   </body>
 </html>
+
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  main {
+    flex: 1;
+  }
+</style>
