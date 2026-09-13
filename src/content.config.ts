@@ -13,7 +13,7 @@ const cases = defineCollection({
   }),
 })
 
-// Видео раздела /video/ — по файлу на ролик: src/content/videos/<slug>.json.
+// Видео раздела /watch-later/ — по файлу на ролик: src/content/videos/<slug>.json.
 // Файлы пишет внешняя автоматизация, поэтому схема строгая: битое, пустое или лишнее
 // поле роняет сборку с именем файла и поля, а не уезжает на сайт кривой страницей.
 
@@ -91,10 +91,13 @@ const videos = defineCollection({
         .min(1, 'нужен хотя бы один тег')
         .max(2, 'не больше двух тегов')
         .refine((tags) => new Set(tags).size === tags.length, 'теги повторяются'),
-      /** Путь к расшифровке в public/: '/video/transcripts/<slug>.md'. */
+      /** Путь к расшифровке в public/: '/watch-later/transcripts/<slug>.md'. */
       transcript: z
         .string()
-        .regex(/^\/video\/transcripts\/[a-z0-9-]+\.md$/, 'путь вида /video/transcripts/<slug>.md')
+        .regex(
+          /^\/watch-later\/transcripts\/[a-z0-9-]+\.md$/,
+          'путь вида /watch-later/transcripts/<slug>.md',
+        )
         .nullable(),
       /** Пост в Telegram-канале. Появляется после публикации, поэтому поле необязательное. */
       tgPost: https.nullable().default(null),

@@ -17,7 +17,7 @@ interface Props {
 
 const { lang, dict, neutralPath, showLangSwitch = true } = Astro.props
 
-// Раздел отмечен и на своих вложенных страницах: /video/ и /video/<slug>/.
+// Раздел отмечен и на своих вложенных страницах: /watch-later/ и /watch-later/<slug>/.
 const menu = dict.nav.menu.map((item) => ({
   label: item.label,
   href: localePath(item.path, lang),

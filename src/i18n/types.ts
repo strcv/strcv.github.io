@@ -28,7 +28,7 @@ export interface ExperienceRow {
   role: string
 }
 
-/** Пункт меню в шапке. Путь нейтральный — без языкового префикса: '/video/'. */
+/** Пункт меню в шапке. Путь нейтральный — без языкового префикса: '/watch-later/'. */
 export interface NavItem {
   label: string
   path: string

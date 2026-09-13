@@ -1,5 +1,5 @@
 ---
-// Список /video/: строки, а не сетка. Поиск и фильтр по тегам работают на клиенте
+// Список /watch-later/: строки, а не сетка. Поиск и фильтр по тегам работают на клиенте
 // по уже отрисованному DOM: всё нужное фильтру лежит в data-атрибутах строк, скрипт
 // только прячет лишние. Без JS список виден целиком.
 
@@ -92,7 +92,7 @@ const telegram = [
                   ...data.tags,
                 ].join(' ')}
               >
-                <a class="row" href={`/video/${id}/`}>
+                <a class="row" href={`/watch-later/${id}/`}>
                   <VideoThumb thumb={data.thumb} videoId={data.videoId}>
                     <span class="dur">{formatDuration(data.duration)}</span>
                   </VideoThumb>

@@ -1,19 +1,21 @@
-# Watch Later — раздел `/video`
+# Watch Later — раздел `/watch-later`
 
 Каталог выжимок из видео. Страницы собирает Astro из коллекции `videos`: список —
-`/video/`, разбор ролика — `/video/<slug>/`. Этот адрес и уходит в Telegram-пост.
+`/watch-later/`, разбор ролика — `/watch-later/<slug>/`. Этот адрес и уходит в
+Telegram-пост.
 
 ## Где что лежит
 
 ```
-src/content/videos/<slug>.json      запись — один ролик; имя файла = адрес разбора
-src/content.config.ts               схема коллекции videos и закрытый список тегов
-public/video/transcripts/<slug>.md  полные расшифровки, отдаются как есть
-src/pages/video/                    страницы списка и разбора
-src/components/Video*.astro         разметка: список, разбор, обложка
+src/content/videos/<slug>.json            запись — один ролик; имя файла = адрес разбора
+src/content.config.ts                     схема коллекции videos и закрытый список тегов
+public/watch-later/transcripts/<slug>.md  полные расшифровки, отдаются как есть
+src/pages/watch-later/                    страницы списка и разбора
+src/components/Video*.astro               разметка: список, разбор, обложка
 ```
 
-Коллекция может быть пустой: сборка проходит, `/video/` показывает пустое состояние.
+Коллекция может быть пустой: сборка проходит, `/watch-later/` показывает пустое
+состояние.
 Папку в git держит `src/content/videos/.gitkeep`.
 
 ## Схема записи
@@ -40,7 +42,7 @@ src/components/Video*.astro         разметка: список, разбор
 | `takeaways` | string[] | 3–5 выводов, каждый — законченная мысль, а не заголовок |
 | `timecodes` | `{t, label}[]` | `t` в секундах, не дальше `duration`; ссылка открывает ролик с этой метки |
 | `tags` | string[] | 1–2 тега из закрытого списка |
-| `transcript` | string \| null | путь `/video/transcripts/<slug>.md` |
+| `transcript` | string \| null | путь `/watch-later/transcripts/<slug>.md` |
 | `tgPost` | string \| null | ссылка на пост в канале; проставляется после публикации |
 
 Все поля обязательны, кроме `thumb` и `tgPost`. Где тип допускает `null`, значение
@@ -64,7 +66,7 @@ src/components/Video*.astro         разметка: список, разбор
 Коммит делается через GitHub Contents API, файл на запись:
 `PUT /repos/{owner}/{repo}/contents/src/content/videos/{slug}.json`. Новый файл — без
 `sha`, правка существующего (дописать `tgPost`) — с его текущим `sha`. Транскрипт кладётся
-отдельным файлом в `public/video/transcripts/{slug}.md`. Писатель один (Гермес), поэтому
+отдельным файлом в `public/watch-later/transcripts/{slug}.md`. Писатель один (Гермес), поэтому
 гонок не будет.
 
 Поля `tg_text` и `skip` из ответа скила в запись не попадают: лишний ключ уронит сборку.

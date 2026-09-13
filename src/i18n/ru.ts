@@ -22,7 +22,7 @@ export const ru: Dict = {
     write: 'Написать',
     langLabel: 'Язык страницы',
     menuLabel: 'Разделы сайта',
-    menu: [{ label: 'Видео', path: '/video/' }],
+    menu: [{ label: 'Видео', path: '/watch-later/' }],
   },
 
   hero: {
