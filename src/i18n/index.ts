@@ -2,7 +2,7 @@ import { en } from './en'
 import { ru } from './ru'
 import type { Dict } from './types'
 
-export type { Dict, Link, Stat, Titled, ExperienceRow, CaseTeaser } from './types'
+export type { Dict, Link, NavItem, Stat, Titled, ExperienceRow, CaseTeaser } from './types'
 
 export const languages = ['ru', 'en'] as const
 export type Lang = (typeof languages)[number]

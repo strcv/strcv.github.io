@@ -1,0 +1,468 @@
+---
+// Список /video/: строки, а не сетка. Поиск и фильтр по тегам работают на клиенте
+// по уже отрисованному DOM: всё нужное фильтру лежит в data-атрибутах строк, скрипт
+// только прячет лишние. Без JS список виден целиком.
+
+import type { CollectionEntry } from 'astro:content'
+import { formatDate, formatDuration, isoDate } from '../lib/video'
+import VideoThumb from './VideoThumb.astro'
+
+interface Props {
+  /** Уже отсортированные: свежие сверху. */
+  videos: CollectionEntry<'videos'>[]
+}
+
+const { videos } = Astro.props
+
+// Теги со счётчиками: частые первыми, при равенстве — по алфавиту.
+const counts = new Map<string, number>()
+for (const { data } of videos) {
+  for (const tag of data.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1)
+}
+const tags = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ru'))
+
+// Канал раздела. Ссылки перенесены со старой статической страницы как есть.
+const telegram = [
+  { label: 'Читать в Telegram', href: 'https://t.me/watchlater' },
+  { label: 'Предложить видео', href: 'https://t.me/watchlater_bot' },
+]
+---
+
+<section class="videos">
+  <div class="wrap wrap--wide page">
+    <header class="head">
+      <p class="eyebrow">Watch Later</p>
+      <h1 class="h">Что внутри видео — до того, как вы отдали ему сорок минут</h1>
+      <p class="lead">
+        Папка «смотреть позже» давно превратилась в кладбище: десяток роликов про AI,
+        разработку и стартапы в день, и ни по одному не понять, что там, пока не откроешь.
+        Здесь — содержание: о чём, ключевые мысли, тайм-коды, ссылка на оригинал и полная
+        транскрибация файлом. Без оценок «стоит / не стоит» — это решаете вы.
+      </p>
+      <ul class="links">
+        {
+          telegram.map((l) => (
+            <li>
+              <a href={l.href} rel="noopener" target="_blank">
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </header>
+
+    {
+      videos.length === 0 ? (
+        <p class="none">Пока пусто: первые разборы появятся здесь.</p>
+      ) : (
+        <div data-videos>
+          <div class="bar" role="search">
+            <input
+              class="q"
+              type="search"
+              placeholder="Поиск по названию, выводам, каналу"
+              aria-label="Поиск"
+              autocomplete="off"
+              data-q
+            />
+            <div class="chips" role="group" aria-label="Фильтр по тегам">
+              {tags.map(([tag, n]) => (
+                <button class="chip" type="button" aria-pressed="false" data-tag={tag}>
+                  {tag}
+                  <span class="chip__n">{n}</span>
+                </button>
+              ))}
+            </div>
+            <p class="count" role="status" data-count>
+              {videos.length} из {videos.length}
+            </p>
+          </div>
+
+          <ul class="list" role="list">
+            {videos.map(({ id, data }) => (
+              <li
+                data-row
+                data-tags={JSON.stringify(data.tags)}
+                data-search={[
+                  data.title,
+                  data.summary,
+                  data.channel,
+                  ...data.takeaways,
+                  ...data.tags,
+                ].join(' ')}
+              >
+                <a class="row" href={`/video/${id}/`}>
+                  <VideoThumb thumb={data.thumb} videoId={data.videoId}>
+                    <span class="dur">{formatDuration(data.duration)}</span>
+                  </VideoThumb>
+                  <div class="row__body">
+                    <p class="meta">
+                      <span>{data.channel}</span>
+                      <time datetime={isoDate(data.added)}>
+                        добавлено {formatDate(data.added)}
+                      </time>
+                    </p>
+                    <h2 class="row__t">{data.title}</h2>
+                    <p class="row__s">{data.summary}</p>
+                    <p class="row__tags">
+                      {data.tags.map((tag) => (
+                        <span class="tag">{tag}</span>
+                      ))}
+                    </p>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div class="empty" hidden data-empty>
+            <p>Ничего не нашлось. Снимите фильтры или уточните запрос.</p>
+            <button class="btn" type="button" data-reset>Сбросить фильтры</button>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-videos]')
+
+  if (root) {
+    const q = root.querySelector<HTMLInputElement>('[data-q]')!
+    const count = root.querySelector<HTMLElement>('[data-count]')!
+    const empty = root.querySelector<HTMLElement>('[data-empty]')!
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-tag]')]
+
+    // Регистр и ё/е в поиске не различаем: «приём» находится по «прием».
+    const norm = (s: string) => s.toLowerCase().replaceAll('ё', 'е')
+
+    const rows = [...root.querySelectorAll<HTMLElement>('[data-row]')].map((el) => ({
+      el,
+      tags: JSON.parse(el.dataset.tags ?? '[]') as string[],
+      text: norm(el.dataset.search ?? ''),
+    }))
+
+    const isOn = (chip: HTMLButtonElement) => chip.getAttribute('aria-pressed') === 'true'
+
+    // Теги объединяются через «или»: строка видна, если у неё есть хоть один из выбранных.
+    const apply = () => {
+      const query = norm(q.value.trim())
+      const active = chips.filter(isOn).map((c) => c.dataset.tag ?? '')
+      let shown = 0
+      for (const row of rows) {
+        const ok =
+          (active.length === 0 || active.some((t) => row.tags.includes(t))) &&
+          row.text.includes(query)
+        row.el.hidden = !ok
+        if (ok) shown++
+      }
+      count.textContent = `${shown} из ${rows.length}`
+      empty.hidden = shown > 0
+    }
+
+    q.addEventListener('input', apply)
+
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        chip.setAttribute('aria-pressed', String(!isOn(chip)))
+        apply()
+      })
+    }
+
+    root.querySelector('[data-reset]')?.addEventListener('click', () => {
+      q.value = ''
+      for (const chip of chips) chip.setAttribute('aria-pressed', 'false')
+      apply()
+      q.focus()
+    })
+
+    // При возврате «назад» браузер может восстановить текст в поле — тогда фильтруем
+    // сразу. Иначе DOM не трогаем: счётчик — live-регион, скринридер зачитал бы его зря.
+    if (q.value.trim()) apply()
+  }
+</script>
+
+<style>
+  .videos {
+    padding-top: var(--s16);
+  }
+
+  .page {
+    display: grid;
+    gap: var(--s12);
+  }
+
+  /* ─── шапка раздела ─── */
+
+  .head {
+    display: grid;
+    gap: var(--s4);
+    justify-items: start;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    color: var(--dim);
+  }
+
+  .h {
+    font-size: var(--fs-h1);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    font-weight: 650;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s6);
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--accent-2);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .links a:hover {
+    color: var(--text);
+  }
+
+  /* ─── поиск и теги ─── */
+
+  /* Поле на всю ширину, под ним теги, справа от тегов — сколько строк видно. */
+  .bar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: var(--s3) var(--s4);
+    padding-bottom: var(--s6);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .q {
+    grid-column: 1 / -1;
+    min-width: 0;
+    min-height: 44px;
+    padding-inline: var(--s4);
+    appearance: none;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--text);
+    /* Наследуем 17px: меньше 16px iOS зумит страницу при фокусе. */
+    font: inherit;
+    text-overflow: ellipsis;
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .q::placeholder {
+    color: var(--dim);
+  }
+
+  .q:hover,
+  .q:focus {
+    border-color: var(--line-2);
+  }
+
+  /* Высотой с тег, чтобы стоять на одной линии с первым рядом тегов. */
+  .count {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    min-height: 44px;
+    padding-inline: var(--s4);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition:
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+
+  .chip:hover {
+    border-color: var(--line-2);
+    color: var(--text);
+  }
+
+  .chip:active {
+    transform: translateY(1px);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .chip__n {
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .chip[aria-pressed='true'] .chip__n {
+    color: var(--accent-2);
+  }
+
+  /* ─── строки ─── */
+
+  .list > li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: var(--s6);
+    align-items: start;
+    padding-block: var(--s6);
+  }
+
+  .row__body {
+    display: grid;
+    gap: var(--s2);
+    min-width: 0;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s4);
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .row__t {
+    font-size: var(--fs-base);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .row:hover .row__t {
+    color: var(--accent-2);
+  }
+
+  .row__s {
+    max-width: var(--measure);
+    color: var(--muted);
+    font-size: var(--fs-md);
+    line-height: 1.55;
+  }
+
+  .row__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s3);
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    color: var(--dim);
+  }
+
+  .tag::before {
+    content: '#';
+  }
+
+  /* Слот обложки: плашка лежит поверх картинки, поэтому фон — полупрозрачный --bg. */
+  .dur {
+    position: absolute;
+    right: var(--s1);
+    bottom: var(--s1);
+    padding-inline: var(--s1);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─── пусто ─── */
+
+  /* Разборов нет совсем: линия на месте панели фильтров, чтобы строка не висела в воздухе. */
+  .none {
+    padding-top: var(--s6);
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  /* Фильтр ничего не нашёл. */
+  .empty {
+    display: grid;
+    justify-items: start;
+    gap: var(--s4);
+    padding-block: var(--s12);
+    color: var(--muted);
+  }
+
+  .empty[hidden] {
+    display: none;
+  }
+
+  /* Узко: обложка и заголовок в строку, описание и теги — на всю ширину под ними,
+     иначе описание в колонке шириной в пол-экрана растягивается на шесть строк. */
+  @media (max-width: 34rem) {
+    .row {
+      grid-template-columns: 6rem 1fr;
+      gap: var(--s2) var(--s4);
+      padding-block: var(--s4);
+    }
+
+    .row__body {
+      display: contents;
+    }
+
+    .row > :global(.thumb) {
+      grid-row: 1 / span 2;
+    }
+
+    .meta,
+    .row__t {
+      grid-column: 2;
+    }
+
+    .row__s,
+    .row__tags {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

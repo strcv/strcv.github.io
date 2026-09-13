@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content'
+import VideoList from '../../components/VideoList.astro'
+import Base from '../../layouts/Base.astro'
+
+// Свежие сверху: по дате добавления в очередь, при равенстве — по дате выхода ролика.
+const videos = (await getCollection('videos')).sort(
+  (a, b) =>
+    b.data.added.getTime() - a.data.added.getTime() ||
+    b.data.published.getTime() - a.data.published.getTime() ||
+    a.id.localeCompare(b.id),
+)
+---
+
+<Base
+  lang="ru"
+  neutralPath="/video/"
+  translated={false}
+  title="Watch Later: выжимки из видео про AI, разработку и стартапы"
+  description="Что внутри видео — до того, как вы потратите на него сорок минут. Краткие выжимки, тайм-коды, транскрипты."
+>
+  <VideoList videos={videos} />
+</Base>

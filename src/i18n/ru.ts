@@ -21,6 +21,8 @@ export const ru: Dict = {
     home: 'Александр Старцев',
     write: 'Написать',
     langLabel: 'Язык страницы',
+    menuLabel: 'Разделы сайта',
+    menu: [{ label: 'Видео', path: '/video/' }],
   },
 
   hero: {

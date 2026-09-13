@@ -1,0 +1,308 @@
+---
+// Разбор одного ролика: о чём он, что забрать, тайм-коды, файлы и сводка.
+
+import type { CollectionEntry } from 'astro:content'
+import { formatDate, formatDuration, isoDate, platform, watchAt } from '../lib/video'
+import VideoThumb from './VideoThumb.astro'
+
+interface Props {
+  entry: CollectionEntry<'videos'>
+}
+
+const { entry } = Astro.props
+const v = entry.data
+const duration = formatDuration(v.duration)
+const where = platform(v.url)
+---
+
+<article class="video">
+  <div class="wrap wrap--wide page">
+    <header class="head">
+      <a class="back" href="/video/">← Вся очередь</a>
+      <h1 class="h">{v.title}</h1>
+      <p class="lead">{v.summary}</p>
+    </header>
+
+    <a class="cover" href={v.url} rel="noopener" target="_blank">
+      <VideoThumb thumb={v.thumb} videoId={v.videoId} large>
+        <span class="cover__cta">Смотреть на {where} · {duration}</span>
+      </VideoThumb>
+    </a>
+
+    {
+      v.takeaways.length > 0 && (
+        <section class="part">
+          <h2 class="part__h">Что забрать</h2>
+          <ol class="takeaways" role="list">
+            {v.takeaways.map((t) => (
+              <li>{t}</li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    {
+      v.timecodes.length > 0 && (
+        <section class="part">
+          <h2 class="part__h">Тайм-коды</h2>
+          <ol class:list={['tc', { 'tc--long': v.duration >= 3600 }]} role="list">
+            {v.timecodes.map((tc) => (
+              <li>
+                <a href={watchAt(v.url, tc.t)} rel="noopener" target="_blank">
+                  <span class="tc__t">{formatDuration(tc.t)}</span>
+                  <span class="tc__l">{tc.label}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    <section class="part">
+      <h2 class="part__h">Файлы и ссылки</h2>
+      <ul class="files">
+        <li>
+          <a class="btn" href={v.url} rel="noopener" target="_blank">
+            <span class="kind">Видео</span> Оригинал на {where}
+          </a>
+        </li>
+        {
+          v.transcript && (
+            <li>
+              <a class="btn" href={v.transcript} rel="noopener" target="_blank">
+                <span class="kind">MD</span> Полная транскрибация
+              </a>
+            </li>
+          )
+        }
+        {
+          v.tgPost && (
+            <li>
+              <a class="btn" href={v.tgPost} rel="noopener" target="_blank">
+                <span class="kind">TG</span> Пост в канале
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </section>
+
+    <dl class="facts">
+      <div>
+        <dt>Канал</dt>
+        <dd>{v.channel}</dd>
+      </div>
+      <div>
+        <dt>Длительность</dt>
+        <dd>{duration}</dd>
+      </div>
+      <div>
+        <dt>Опубликовано</dt>
+        <dd><time datetime={isoDate(v.published)}>{formatDate(v.published)}</time></dd>
+      </div>
+      <div>
+        <dt>Язык</dt>
+        <dd>{v.lang.toUpperCase()}</dd>
+      </div>
+    </dl>
+  </div>
+</article>
+
+<style>
+  .video {
+    padding-top: var(--s16);
+  }
+
+  .page {
+    display: grid;
+    gap: var(--s12);
+  }
+
+  .head {
+    display: grid;
+    gap: var(--s4);
+    justify-items: start;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .back:hover {
+    color: var(--text);
+  }
+
+  .h {
+    font-size: var(--fs-h1);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    font-weight: 650;
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+
+  /* ─── обложка ─── */
+
+  .cover {
+    position: relative;
+    display: block;
+    max-width: 40rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .cover__cta {
+    position: absolute;
+    left: var(--s4);
+    bottom: var(--s4);
+    padding: var(--s2) var(--s3);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    transition:
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+
+  .cover:hover .cover__cta {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* ─── разделы ─── */
+
+  .part {
+    display: grid;
+    gap: var(--s6);
+  }
+
+  .part__h {
+    padding-bottom: var(--s3);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  /* Номера с ведущим нулём — тот же приём, что у разделов главной. */
+  .takeaways {
+    counter-reset: n;
+    display: grid;
+    gap: var(--s4);
+    max-width: var(--measure);
+  }
+
+  .takeaways li {
+    counter-increment: n;
+    display: flex;
+    align-items: baseline;
+    gap: var(--s4);
+  }
+
+  .takeaways li::before {
+    content: counter(n, decimal-leading-zero);
+    flex: 0 0 auto;
+    min-width: 2.5ch;
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tc li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tc a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s4);
+    padding-block: var(--s3);
+  }
+
+  /* Колонка времени по ширине самой длинной метки: m:ss или h:mm:ss. */
+  .tc__t {
+    flex: 0 0 auto;
+    min-width: 5ch;
+    text-align: right;
+    font-family: var(--mono);
+    font-size: var(--fs-sm);
+    color: var(--accent-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tc--long .tc__t {
+    min-width: 7ch;
+  }
+
+  .tc__l {
+    color: var(--muted);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .tc a:hover .tc__l {
+    color: var(--text);
+  }
+
+  .files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s3);
+  }
+
+  /* Метка и подпись разного кегля: по базовой линии, а не по центру. */
+  .files .btn {
+    align-items: baseline;
+  }
+
+  .kind {
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  /* ─── сводка ─── */
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: var(--s6);
+    margin: 0;
+    padding-top: var(--s6);
+    border-top: 1px solid var(--line);
+  }
+
+  .facts dt {
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .facts dd {
+    margin: var(--s1) 0 0;
+    font-family: var(--mono);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

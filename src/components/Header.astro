@@ -1,6 +1,8 @@
 ---
-// Шапка: слева имя, справа переключатель языка и «Написать».
+// Шапка: слева имя, справа меню разделов, переключатель языка и «Написать».
 // Переключатель — обычные ссылки на тот же документ на другом языке, JS не нужен.
+// На страницах без перевода его нет вовсе: выбирать не из чего.
+// Меню у каждого языка своё (nav.menu в словаре): раздела может не быть в переводе.
 
 import { type Dict, type Lang, localePath } from '../i18n'
 
@@ -9,9 +11,23 @@ interface Props {
   dict: Dict
   /** Путь без языкового префикса: '/' или '/cases/marsbase-otc/'. */
   neutralPath: string
+  /** false — страница есть только на одном языке, переключатель не показываем. */
+  showLangSwitch?: boolean
 }
 
-const { lang, dict, neutralPath } = Astro.props
+const { lang, dict, neutralPath, showLangSwitch = true } = Astro.props
+
+// Раздел отмечен и на своих вложенных страницах: /video/ и /video/<slug>/.
+const menu = dict.nav.menu.map((item) => ({
+  label: item.label,
+  href: localePath(item.path, lang),
+  current:
+    neutralPath === item.path
+      ? ('page' as const)
+      : neutralPath.startsWith(item.path)
+        ? ('true' as const)
+        : undefined,
+}))
 ---
 
 <header class="top">
@@ -19,23 +35,43 @@ const { lang, dict, neutralPath } = Astro.props
     <a class="name" href={localePath('/', lang)}>{dict.nav.home}</a>
 
     <div class="right">
-      <nav class="lang" aria-label={dict.nav.langLabel}>
-        <a
-          class:list={['lang__i', { 'is-on': lang === 'ru' }]}
-          href={localePath(neutralPath, 'ru')}
-          hreflang="ru"
-          lang="ru"
-          aria-current={lang === 'ru' ? 'true' : undefined}>RU</a
-        >
-        <span class="lang__sep" aria-hidden="true">/</span>
-        <a
-          class:list={['lang__i', { 'is-on': lang === 'en' }]}
-          href={localePath(neutralPath, 'en')}
-          hreflang="en"
-          lang="en"
-          aria-current={lang === 'en' ? 'true' : undefined}>EN</a
-        >
-      </nav>
+      {
+        menu.length > 0 && (
+          <nav class="menu" aria-label={dict.nav.menuLabel}>
+            {menu.map((item) => (
+              <a
+                class:list={['menu__i', { 'is-on': item.current }]}
+                href={item.href}
+                aria-current={item.current}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        )
+      }
+
+      {
+        showLangSwitch && (
+          <nav class="lang" aria-label={dict.nav.langLabel}>
+            <a
+              class:list={['lang__i', { 'is-on': lang === 'ru' }]}
+              href={localePath(neutralPath, 'ru')}
+              hreflang="ru"
+              lang="ru"
+              aria-current={lang === 'ru' ? 'true' : undefined}>RU</a
+            >
+            <span class="lang__sep" aria-hidden="true">/</span>
+            <a
+              class:list={['lang__i', { 'is-on': lang === 'en' }]}
+              href={localePath(neutralPath, 'en')}
+              hreflang="en"
+              lang="en"
+              aria-current={lang === 'en' ? 'true' : undefined}>EN</a
+            >
+          </nav>
+        )
+      }
 
       <a class="write" href="mailto:insider2la@gmail.com">{dict.nav.write}</a>
     </div>
@@ -76,6 +112,26 @@ const { lang, dict, neutralPath } = Astro.props
     align-items: center;
     gap: var(--s4);
     flex: 0 0 auto;
+  }
+
+  .menu {
+    display: flex;
+    align-items: center;
+    gap: var(--s4);
+  }
+
+  .menu__i {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: var(--fs-md);
+    color: var(--muted);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .menu__i:hover,
+  .menu__i.is-on {
+    color: var(--text);
   }
 
   .lang {
@@ -123,6 +179,10 @@ const { lang, dict, neutralPath } = Astro.props
   }
 
   @media (max-width: 30rem) {
+    .right {
+      gap: var(--s3);
+    }
+
     .write {
       padding-inline: var(--s3);
     }

@@ -25,6 +25,13 @@
   --font: 'Inter', ui-sans-serif, -apple-system, system-ui, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
+  /* Размеры шрифта. Значения взяты из тех, что уже есть на сайте. */
+  --fs-xs: 0.75rem; /* 12 — моноширинные метки, метаданные */
+  --fs-sm: 0.875rem; /* 14 — подписи, тайм-коды */
+  --fs-md: 0.9375rem; /* 15 — второстепенный текст, кнопки */
+  --fs-base: 1.0625rem; /* 17 — основной текст, заголовки строк */
+  --fs-h1: clamp(1.875rem, 4.5vw, 2.75rem); /* h1 внутренней страницы */
+
   --page: 52rem;
   --wide: 68rem;
   --measure: 66ch;
@@ -38,6 +45,7 @@
   --s12: 3rem;
   --s16: 4rem;
   --s24: 6rem;
+  --radius-sm: 4px; /* плашка поверх картинки */
   --radius: 12px;
   --radius-lg: 16px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);

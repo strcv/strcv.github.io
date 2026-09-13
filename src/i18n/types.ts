@@ -28,6 +28,12 @@ export interface ExperienceRow {
   role: string
 }
 
+/** Пункт меню в шапке. Путь нейтральный — без языкового префикса: '/video/'. */
+export interface NavItem {
+  label: string
+  path: string
+}
+
 export interface CaseTeaser {
   slug: string
   title: string
@@ -54,6 +60,9 @@ export interface Dict {
     home: string
     write: string
     langLabel: string
+    menuLabel: string
+    /** Меню у каждого языка своё: раздела может не быть в переводе. Пустое — меню нет. */
+    menu: NavItem[]
   }
 
   hero: {

@@ -22,6 +22,9 @@ export const en: Dict = {
     home: 'Alexander Startsev',
     write: 'Email me',
     langLabel: 'Page language',
+    menuLabel: 'Site sections',
+    // Раздел /video только на русском, и это не временно: в английском меню его нет.
+    menu: [],
   },
 
   hero: {

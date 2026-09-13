@@ -13,9 +13,21 @@ interface Props {
   description?: string
   /** Убрать из индексации: страница 404. */
   noindex?: boolean
+  /**
+   * false — страница есть только на языке `lang` и перевода не будет: без
+   * hreflang-альтернатив и без переключателя языка в шапке.
+   */
+  translated?: boolean
 }
 
-const { lang, neutralPath, title, description, noindex = false } = Astro.props
+const {
+  lang,
+  neutralPath,
+  title,
+  description,
+  noindex = false,
+  translated = true,
+} = Astro.props
 const dict = dicts[lang]
 
 const pageTitle = title ? `${title} — ${dict.hero.name}` : dict.meta.title
@@ -38,19 +50,23 @@ const ogImage = new URL(lang === 'ru' ? '/og.png' : '/og-en.png', origin)
     {noindex && <meta name="robots" content="noindex" />}
 
     {
-      languages.map((l) => (
-        <link
-          rel="alternate"
-          hreflang={l}
-          href={new URL(localePath(neutralPath, l), origin).href}
-        />
-      ))
+      translated && (
+        <>
+          {languages.map((l) => (
+            <link
+              rel="alternate"
+              hreflang={l}
+              href={new URL(localePath(neutralPath, l), origin).href}
+            />
+          ))}
+          <link
+            rel="alternate"
+            hreflang="x-default"
+            href={new URL(localePath(neutralPath, 'ru'), origin).href}
+          />
+        </>
+      )
     }
-    <link
-      rel="alternate"
-      hreflang="x-default"
-      href={new URL(localePath(neutralPath, 'ru'), origin).href}
-    />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={dict.hero.name} />
@@ -67,7 +83,7 @@ const ogImage = new URL(lang === 'ru' ? '/og.png' : '/og-en.png', origin)
 
   <body>
     <a href="#main" class="skip">{dict.skipToContent}</a>
-    <Header lang={lang} dict={dict} neutralPath={neutralPath} />
+    <Header lang={lang} dict={dict} neutralPath={neutralPath} showLangSwitch={translated} />
     <main id="main">
       <slot />
     </main>

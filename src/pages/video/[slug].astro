@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content'
+import Video from '../../components/Video.astro'
+import Base from '../../layouts/Base.astro'
+
+export async function getStaticPaths() {
+  const entries = await getCollection('videos')
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }))
+}
+
+const { entry } = Astro.props
+---
+
+<Base
+  lang="ru"
+  neutralPath={`/video/${entry.id}/`}
+  translated={false}
+  title={entry.data.title}
+  description={entry.data.summary}
+>
+  <Video entry={entry} />
+</Base>
