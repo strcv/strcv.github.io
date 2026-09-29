@@ -2,6 +2,7 @@
 // Не публикуем действие, пока для него нет подтверждённого адреса.
 
 import type { Link } from '../i18n'
+import ContactIcon from './ContactIcon.astro'
 
 interface Props {
   link: Link
@@ -21,6 +22,7 @@ const target = link.external ? '_blank' : undefined
       rel={rel}
       target={target}
     >
+      <ContactIcon href={link.href} />
       {link.label}
     </a>
   )

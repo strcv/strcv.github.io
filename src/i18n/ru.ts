@@ -20,10 +20,13 @@ export const ru: Dict = {
 
   nav: {
     home: 'Александр Старцев',
-    write: 'Написать',
     langLabel: 'Язык страницы',
     menuLabel: 'Разделы сайта',
-    menu: [{ label: 'Видео', path: '/watch-later/' }],
+    menu: [
+      { label: 'Кейсы', path: '/#cases' },
+      { label: 'Услуги', path: '/#services' },
+      { label: 'Контакты', path: '/#contacts' },
+    ],
   },
 
   hero: {
@@ -31,14 +34,12 @@ export const ru: Dict = {
     headline: 'Достаю деньги из существующей базы.',
     lead: 'CRM и retention для крипто- и финтех-продуктов. В маркетинге с 2016, в Web3 с 2019. Сейчас — CRM & Retention Marketing Lead в EMCD.',
     actions: [
-      { label: 'Написать', href: emailHref },
       { label: 'Telegram', href: site.telegram, external: true },
       { label: 'LinkedIn', href: site.linkedin, external: true },
     ],
   },
 
   stats: {
-    n: '02',
     title: 'Цифры',
     items: [
       { value: '$10 млн+', label: 'депозитов в стейкинг Nominex из существующей базы' },
@@ -52,7 +53,6 @@ export const ru: Dict = {
   },
 
   skills: {
-    n: '03',
     title: 'Что я умею',
     items: [
       {
@@ -71,7 +71,6 @@ export const ru: Dict = {
   },
 
   principles: {
-    n: '04',
     title: 'Как я работаю',
     items: [
       {
@@ -102,7 +101,6 @@ export const ru: Dict = {
   },
 
   fit: {
-    n: '05',
     title: 'С кем мне по пути',
     goodTitle: 'Со мной хорошо, если',
     badTitle: 'Мимо, если',
@@ -123,7 +121,6 @@ export const ru: Dict = {
   },
 
   services: {
-    n: '06',
     title: 'Со мной можно работать',
     lead: 'Помимо основного места я беру внешние задачи — там, где нужен взгляд со стороны и опыт, который дорого набирать самому.',
     items: [
@@ -148,7 +145,6 @@ export const ru: Dict = {
   },
 
   cases: {
-    n: '07',
     title: 'Кейсы',
     items: [
       {
@@ -178,7 +174,6 @@ export const ru: Dict = {
   },
 
   experience: {
-    n: '08',
     title: 'Опыт',
     rows: [
       { period: '02.2024 — н. в.', company: 'EMCD', role: 'CRM & Retention Marketing Lead' },
@@ -200,7 +195,6 @@ export const ru: Dict = {
   },
 
   pets: {
-    n: '09',
     title: 'Пет-проекты',
     lead: 'Помимо работы я строю свои штуки. Обычно из раздражения: делал что-то руками слишком долго — значит, надо автоматизировать.',
     items: [
@@ -208,11 +202,14 @@ export const ru: Dict = {
         title: 'ASAP Mail',
         body: 'Сервис, который собирает HTML-письма по брендбуку компании. На вход бриф, сайт или примеры прошлых рассылок; на выходе письмо, прошедшее линтер и не разваливающееся в Outlook и тёмной теме. Делаю потому, что девять лет верстал и правил письма руками.',
       },
+      {
+        title: 'P2P-бот',
+        body: 'Кейс разработки ботов и автоматизации процессов.',
+      },
     ],
   },
 
   contacts: {
-    n: '10',
     title: 'Контакты',
     lead: 'Пишите, если у вас продукт с базой, которую нужно заставить работать. Или если нужен разбор, стратегия или ментор.',
     items: [

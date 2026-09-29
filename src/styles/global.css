@@ -33,16 +33,19 @@
   --fs-h1: clamp(1.875rem, 4.5vw, 2.75rem); /* h1 внутренней страницы */
 
   --tap: 44px;
+  --icon-size: 1.25rem;
   --header-height: 64px;
   --tile-min: 17rem;
   --card-min: 18rem;
   --on-accent: #0b0a1a;
   --fs-tiny: 0.8125rem;
   --fs-hero: clamp(2.75rem, 7vw, 4.5rem);
+  --fs-hero-mobile: clamp(2rem, 8.5vw, 2.5rem);
   --fs-stat: clamp(2rem, 4vw, 2.75rem);
   --fs-section: clamp(1.5rem, 3vw, 2rem);
   --fs-error: clamp(2rem, 5vw, 3rem);
   --hero-glow: radial-gradient(900px 500px at 75% -15%, rgba(124, 107, 255, 0.16), transparent 60%);
+  --portrait-width: 5rem; /* Небольшой портрет рядом с именем. */
 
   --page: 52rem;
   --wide: 68rem;

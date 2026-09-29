@@ -1,6 +1,5 @@
 ---
-import { emailHref } from '../site.config'
-// Шапка: слева имя, справа меню разделов, переключатель языка и «Написать».
+// Шапка: слева имя, справа меню разделов и переключатель языка.
 // Переключатель — обычные ссылки на тот же документ на другом языке, JS не нужен.
 // На страницах без перевода его нет вовсе: выбирать не из чего.
 // Меню у каждого языка своё (nav.menu в словаре): раздела может не быть в переводе.
@@ -31,7 +30,7 @@ const menu = dict.nav.menu.map((item) => ({
 }))
 ---
 
-<header class="top">
+<header class:list={['top', { 'top--home': neutralPath === '/' }]}>
   <div class="wrap wrap--wide inner">
     <a class="name" href={localePath('/', lang)}>{dict.nav.home}</a>
 
@@ -73,8 +72,6 @@ const menu = dict.nav.menu.map((item) => ({
           </nav>
         )
       }
-
-      <a class="write" href={emailHref}>{dict.nav.write}</a>
     </div>
   </div>
 </header>
@@ -164,23 +161,18 @@ const menu = dict.nav.menu.map((item) => ({
     color: var(--line-2);
   }
 
-  .write {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--tap);
-    padding-inline: var(--s4);
-    border: 1px solid var(--line-2);
-    border-radius: var(--radius);
-    font-size: var(--fs-md);
-    font-weight: 500;
-    transition: border-color var(--dur) var(--ease);
-  }
-
-  .write:hover {
-    border-color: var(--accent);
-  }
-
   @media (max-width: 40rem) {
+    .menu { gap: var(--s2); }
+    .menu__i {
+      min-width: var(--tap);
+      justify-content: center;
+      font-size: var(--fs-sm);
+      white-space: nowrap;
+    }
+    .top--home { --header-height: var(--s16); }
+    .top--home .name { display: none; }
+    .top--home .lang { margin-inline-start: auto; }
+
     .inner {
       flex-wrap: wrap;
       gap: 0;
@@ -195,11 +187,6 @@ const menu = dict.nav.menu.map((item) => ({
       flex: 1 1 100%;
       justify-content: space-between;
       gap: var(--s2);
-    }
-
-    .write {
-      margin-left: auto;
-      padding-inline: var(--s3);
     }
   }
 </style>

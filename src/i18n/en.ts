@@ -21,11 +21,13 @@ export const en: Dict = {
 
   nav: {
     home: 'Alexander Startsev',
-    write: 'Email me',
     langLabel: 'Page language',
     menuLabel: 'Site sections',
-    // Раздел /watch-later только на русском, и это не временно: в английском меню его нет.
-    menu: [],
+    menu: [
+      { label: 'Work', path: '/#cases' },
+      { label: 'Services', path: '/#services' },
+      { label: 'Contact', path: '/#contacts' },
+    ],
   },
 
   hero: {
@@ -33,14 +35,12 @@ export const en: Dict = {
     headline: 'I turn the users you already have into revenue.',
     lead: 'CRM and retention for crypto and fintech products. In marketing since 2016, in Web3 since 2019. Currently CRM & Retention Marketing Lead at EMCD.',
     actions: [
-      { label: 'Email me', href: emailHref },
       { label: 'Telegram', href: site.telegram, external: true },
       { label: 'LinkedIn', href: site.linkedin, external: true },
     ],
   },
 
   stats: {
-    n: '02',
     title: 'Numbers',
     items: [
       { value: '$10M+', label: 'in staking deposits at Nominex from an existing user base' },
@@ -54,7 +54,6 @@ export const en: Dict = {
   },
 
   skills: {
-    n: '03',
     title: 'What I do',
     items: [
       {
@@ -73,7 +72,6 @@ export const en: Dict = {
   },
 
   principles: {
-    n: '04',
     title: 'How I work',
     items: [
       {
@@ -104,7 +102,6 @@ export const en: Dict = {
   },
 
   fit: {
-    n: '05',
     title: 'Who I work well with',
     goodTitle: 'We will get on if',
     badTitle: 'Not a fit if',
@@ -125,7 +122,6 @@ export const en: Dict = {
   },
 
   services: {
-    n: '06',
     title: 'Working with me',
     lead: 'Alongside my main job I take on outside work — where an outside view is needed, and where the experience is expensive to build yourself.',
     items: [
@@ -150,7 +146,6 @@ export const en: Dict = {
   },
 
   cases: {
-    n: '07',
     title: 'Cases',
     items: [
       {
@@ -180,7 +175,6 @@ export const en: Dict = {
   },
 
   experience: {
-    n: '08',
     title: 'Experience',
     rows: [
       { period: '02.2024 — present', company: 'EMCD', role: 'CRM & Retention Marketing Lead' },
@@ -202,7 +196,6 @@ export const en: Dict = {
   },
 
   pets: {
-    n: '09',
     title: 'Side projects',
     lead: 'Besides work I build my own things. Usually out of irritation: I did something by hand for too long, which means it needs automating.',
     items: [
@@ -210,11 +203,14 @@ export const en: Dict = {
         title: 'ASAP Mail',
         body: 'A service that assembles HTML emails to a company’s brand book. In: a brief, a website, or past campaigns. Out: an email that passes the linter and does not fall apart in Outlook or in dark mode. I build it because I spent nine years laying out and fixing emails by hand.',
       },
+      {
+        title: 'P2P bot',
+        body: 'A case study in bot development and process automation.',
+      },
     ],
   },
 
   contacts: {
-    n: '10',
     title: 'Contacts',
     lead: 'Write if you have a product with a base that needs to start working. Or if you need a review, a strategy, or a mentor.',
     items: [

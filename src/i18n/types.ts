@@ -56,7 +56,6 @@ export interface Dict {
 
   nav: {
     home: string
-    write: string
     langLabel: string
     menuLabel: string
     /** Меню у каждого языка своё: раздела может не быть в переводе. Пустое — меню нет. */
@@ -71,26 +70,22 @@ export interface Dict {
   }
 
   stats: {
-    n: string
     title: string
     items: Stat[]
     note: string
   }
 
   skills: {
-    n: string
     title: string
     items: Titled[]
   }
 
   principles: {
-    n: string
     title: string
     items: Titled[]
   }
 
   fit: {
-    n: string
     title: string
     goodTitle: string
     badTitle: string
@@ -99,7 +94,6 @@ export interface Dict {
   }
 
   services: {
-    n: string
     title: string
     lead: string
     items: Titled[]
@@ -107,7 +101,6 @@ export interface Dict {
   }
 
   cases: {
-    n: string
     title: string
     items: CaseTeaser[]
     more: string
@@ -115,7 +108,6 @@ export interface Dict {
   }
 
   experience: {
-    n: string
     title: string
     rows: ExperienceRow[]
     education: string
@@ -127,14 +119,12 @@ export interface Dict {
   }
 
   pets: {
-    n: string
     title: string
     lead: string
     items: Titled[]
   }
 
   contacts: {
-    n: string
     title: string
     lead: string
     items: Link[]

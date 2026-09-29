@@ -1,10 +1,13 @@
 ---
-// Одна длинная главная с пронумерованными разделами 01–10.
+// Одна длинная главная с именованными разделами.
 // Порядок разделов задан в docs/tz.md и меняться не должен.
 // Разметка общая для обоих языков — различаются только словари.
 
+import { Image } from 'astro:assets'
+import portrait from '../assets/owner-portrait.png'
 import { dicts, type Lang, localePath } from '../i18n'
 import ActionLink from './ActionLink.astro'
+import ContactIcon from './ContactIcon.astro'
 import Section from './Section.astro'
 
 interface Props {
@@ -25,11 +28,21 @@ const pageSections = [
 <!-- 01. Первый экран -->
 <section class="hero" id="hero">
   <div class="wrap wrap--wide">
-    <div class="hero__head">
-      <span class="hero__n" aria-hidden="true">01</span>
+    <div class="hero__identity">
       <p class="hero__name">{t.hero.name}</p>
+      <Image
+        class="hero__portrait"
+        src={portrait}
+        alt={t.hero.name}
+        width={192}
+        height={256}
+        format="webp"
+        quality={85}
+        loading="eager"
+        fetchpriority="high"
+      />
+      <h1 class="hero__h">{t.hero.headline}</h1>
     </div>
-    <h1 class="hero__h">{t.hero.headline}</h1>
     <p class="hero__lead">{t.hero.lead}</p>
     <div class="hero__actions">
       {t.hero.actions.filter((link) => link.href).map((link, i) => <ActionLink link={link} primary={i === 0} />)}
@@ -39,12 +52,12 @@ const pageSections = [
 
 <nav class="page-nav wrap wrap--wide" aria-label={lang === 'ru' ? 'На этой странице' : 'On this page'}>
   {pageSections.map(({ id, section }) => (
-    <a href={`#${id}`}><span aria-hidden="true">{section.n}</span> {section.title}</a>
+    <a href={`#${id}`}>{section.title}</a>
   ))}
 </nav>
 
 <!-- 02. Цифры -->
-<Section n={t.stats.n} title={t.stats.title} id="stats" wide>
+<Section title={t.stats.title} id="stats" wide>
   <ul class="tiles">
     {
       t.stats.items.map((s) => (
@@ -59,7 +72,7 @@ const pageSections = [
 </Section>
 
 <!-- 03. Что я умею -->
-<Section n={t.skills.n} title={t.skills.title} id="skills" wide>
+<Section title={t.skills.title} id="skills" wide>
   <div class="stack">
     {
       t.skills.items.map((item) => (
@@ -73,7 +86,7 @@ const pageSections = [
 </Section>
 
 <!-- 04. Как я работаю -->
-<Section n={t.principles.n} title={t.principles.title} id="principles" wide>
+<Section title={t.principles.title} id="principles" wide>
   <div class="stack">
     {
       t.principles.items.map((item) => (
@@ -87,7 +100,7 @@ const pageSections = [
 </Section>
 
 <!-- 05. С кем мне по пути -->
-<Section n={t.fit.n} title={t.fit.title} id="fit" wide alt>
+<Section title={t.fit.title} id="fit" wide alt>
   <div class="fit">
     <div>
       <h3 class="fit__t">{t.fit.goodTitle}</h3>
@@ -123,7 +136,7 @@ const pageSections = [
 </Section>
 
 <!-- 06. Со мной можно работать -->
-<Section n={t.services.n} title={t.services.title} id="services" wide>
+<Section title={t.services.title} id="services" wide>
   <p class="lead services__lead">{t.services.lead}</p>
   <div class="stack">
     {
@@ -141,7 +154,7 @@ const pageSections = [
 </Section>
 
 <!-- 07. Кейсы -->
-<Section n={t.cases.n} title={t.cases.title} id="cases" wide>
+<Section title={t.cases.title} id="cases" wide>
   <ul class="cards">
     {
       t.cases.items.map((c) => (
@@ -161,7 +174,7 @@ const pageSections = [
 </Section>
 
 <!-- 08. Опыт -->
-<Section n={t.experience.n} title={t.experience.title} id="experience" wide>
+<Section title={t.experience.title} id="experience" wide>
   <table class="cv">
     <caption class="sr">{t.experience.title}</caption>
     <thead class="sr">
@@ -199,7 +212,7 @@ const pageSections = [
 </Section>
 
 <!-- 09. Пет-проекты -->
-<Section n={t.pets.n} title={t.pets.title} id="pets" wide>
+<Section title={t.pets.title} id="pets" wide>
   <p class="lead services__lead">{t.pets.lead}</p>
   <div class="stack">
     {
@@ -214,7 +227,7 @@ const pageSections = [
 </Section>
 
 <!-- 10. Контакты -->
-<Section n={t.contacts.n} title={t.contacts.title} id="contacts" wide>
+<Section title={t.contacts.title} id="contacts" wide>
   <p class="lead services__lead">{t.contacts.lead}</p>
   <ul class="contacts">
     {
@@ -222,7 +235,8 @@ const pageSections = [
         <li class="contacts__i">
           <span class="contacts__k dim">{l.label}</span>
           <a class="contacts__v" href={l.href} rel="noopener">
-            {l.note ?? l.label}
+            <ContactIcon href={l.href} />
+            <span>{l.note ?? l.label}</span>
           </a>
         </li>
       ))
@@ -244,7 +258,6 @@ const pageSections = [
     color: var(--muted);
     font-size: var(--fs-sm);
   }
-  .page-nav span { font-family: var(--mono); color: var(--dim); }
   .page-nav a:hover { color: var(--text); }
 
   /* ─── 01. Первый экран ─── */
@@ -269,35 +282,50 @@ const pageSections = [
     position: relative;
   }
 
-  .hero__head {
-    display: flex;
-    align-items: baseline;
+  .hero__identity {
+    display: grid;
+    grid-template-columns: var(--portrait-width) minmax(0, 1fr);
+    grid-template-areas: 'portrait name' 'headline headline';
+    align-items: center;
     gap: var(--s4);
   }
 
-  .hero__n {
-    font-family: var(--mono);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    color: var(--dim);
+  .hero__portrait {
+    grid-area: portrait;
+    width: var(--portrait-width);
+    height: auto;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius);
     flex: 0 0 auto;
-    min-width: 2.5ch;
   }
 
   .hero__name {
+    grid-area: name;
     font-size: var(--fs-base);
     font-weight: 600;
     color: var(--muted);
   }
 
   .hero__h {
+    grid-area: headline;
     text-wrap: balance;
-    margin-top: var(--s4);
+    min-width: 0;
     font-size: var(--fs-hero);
     line-height: 1.05;
     letter-spacing: -0.03em;
     font-weight: 650;
     max-width: 18ch;
+  }
+
+  @media (max-width: 40rem) {
+    .hero__identity {
+      grid-template-columns: var(--s16) minmax(0, 1fr);
+      grid-template-areas: 'portrait name' 'headline headline';
+    }
+
+    .hero__portrait {
+      width: var(--s16);
+    }
   }
 
   .hero__lead {
@@ -311,6 +339,40 @@ const pageSections = [
     display: flex;
     flex-wrap: wrap;
     gap: var(--s3);
+  }
+
+  @media (max-width: 40rem) {
+    .hero { padding-block: var(--s6) var(--s8); }
+    .hero__identity { row-gap: var(--s6); }
+    .hero__name { color: var(--text); }
+    .hero__h {
+      font-size: var(--fs-hero-mobile);
+      line-height: 1.1;
+      max-width: none;
+    }
+    .hero__lead {
+      margin-top: var(--s4);
+      font-size: var(--s4);
+      line-height: 1.6;
+    }
+    .hero__actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: var(--s6);
+    }
+    .hero__actions :global(.btn) { justify-content: center; }
+    .page-nav {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: var(--s2);
+      padding-bottom: var(--s2);
+    }
+    .page-nav a {
+      flex: 0 0 auto;
+      padding-inline: var(--s3);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
   }
 
   /* ─── 02. Цифры ─── */
@@ -559,6 +621,8 @@ const pageSections = [
   .contacts__v {
     display: inline-flex;
     align-items: center;
+    gap: var(--s2);
+    max-width: 100%;
     min-height: var(--tap);
     overflow-wrap: anywhere;
     color: var(--accent-2);
@@ -608,5 +672,9 @@ const pageSections = [
     .cv__p {
       margin-bottom: var(--s1);
     }
+  }
+  @media (max-width: 40rem) {
+    .tile { padding: var(--s4); }
+    .stack { gap: var(--s6); }
   }
 </style>
