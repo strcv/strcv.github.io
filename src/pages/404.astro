@@ -5,7 +5,7 @@ import Base from '../layouts/Base.astro'
 const t = dicts.ru
 ---
 
-<Base lang="ru" neutralPath="/404/" title={t.notFound.title} description={t.notFound.body} noindex>
+<Base lang="ru" neutralPath="/404.html" title={t.notFound.title} description={t.notFound.body} noindex>
   <section class="nf">
     <div class="wrap wrap--wide">
       <p class="nf__n" aria-hidden="true">404</p>
@@ -23,14 +23,14 @@ const t = dicts.ru
 
   .nf__n {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     color: var(--dim);
   }
 
   .nf__t {
     margin-top: var(--s4);
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: var(--fs-error);
     line-height: 1.1;
     letter-spacing: -0.03em;
     font-weight: 650;

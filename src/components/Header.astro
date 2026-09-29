@@ -1,4 +1,5 @@
 ---
+import { emailHref } from '../site.config'
 // Шапка: слева имя, справа меню разделов, переключатель языка и «Написать».
 // Переключатель — обычные ссылки на тот же документ на другом языке, JS не нужен.
 // На страницах без перевода его нет вовсе: выбирать не из чего.
@@ -73,7 +74,7 @@ const menu = dict.nav.menu.map((item) => ({
         )
       }
 
-      <a class="write" href="mailto:insider2la@gmail.com">{dict.nav.write}</a>
+      <a class="write" href={emailHref}>{dict.nav.write}</a>
     </div>
   </div>
 </header>
@@ -83,14 +84,14 @@ const menu = dict.nav.menu.map((item) => ({
     position: sticky;
     top: 0;
     z-index: 10;
-    height: 64px;
+    min-height: var(--header-height);
     background: color-mix(in srgb, var(--bg) 72%, transparent);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
   }
 
   .inner {
-    height: 100%;
+    min-height: var(--header-height);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -100,10 +101,11 @@ const menu = dict.nav.menu.map((item) => ({
   .name {
     font-weight: 600;
     letter-spacing: -0.01em;
-    /* На узком экране имя ужимается первым, кнопка связи остаётся целой. */
+    /* На узком экране имя занимает отдельную строку. */
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
     white-space: nowrap;
   }
 
@@ -123,7 +125,7 @@ const menu = dict.nav.menu.map((item) => ({
   .menu__i {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: var(--tap);
     font-size: var(--fs-md);
     color: var(--muted);
     transition: color var(--dur) var(--ease);
@@ -139,7 +141,7 @@ const menu = dict.nav.menu.map((item) => ({
     align-items: center;
     gap: var(--s1);
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
   }
 
@@ -147,8 +149,8 @@ const menu = dict.nav.menu.map((item) => ({
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 32px;
-    min-height: 44px;
+    min-width: var(--tap);
+    min-height: var(--tap);
     color: var(--dim);
     transition: color var(--dur) var(--ease);
   }
@@ -165,11 +167,11 @@ const menu = dict.nav.menu.map((item) => ({
   .write {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: var(--tap);
     padding-inline: var(--s4);
     border: 1px solid var(--line-2);
     border-radius: var(--radius);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
     font-weight: 500;
     transition: border-color var(--dur) var(--ease);
   }
@@ -178,12 +180,25 @@ const menu = dict.nav.menu.map((item) => ({
     border-color: var(--accent);
   }
 
-  @media (max-width: 30rem) {
+  @media (max-width: 40rem) {
+    .inner {
+      flex-wrap: wrap;
+      gap: 0;
+      padding-block: var(--s2);
+    }
+
+    .name {
+      flex: 1 1 100%;
+    }
+
     .right {
-      gap: var(--s3);
+      flex: 1 1 100%;
+      justify-content: space-between;
+      gap: var(--s2);
     }
 
     .write {
+      margin-left: auto;
       padding-inline: var(--s3);
     }
   }

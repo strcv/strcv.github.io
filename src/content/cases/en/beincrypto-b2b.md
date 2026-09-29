@@ -11,4 +11,4 @@ put together dashboards and working materials.
 
 ## Result
 
-<span class="todo">[no numbers at hand — describe in words]</span>
+The sales team received a HubSpot CRM setup with a structured funnel, KPIs, reporting and dashboards.

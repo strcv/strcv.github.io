@@ -44,7 +44,7 @@ const { n, title, id, alt = false, wide = false } = Astro.props
 
   .n {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: var(--fs-xs);
     line-height: 1;
     letter-spacing: 0.08em;
     color: var(--dim);
@@ -54,7 +54,7 @@ const { n, title, id, alt = false, wide = false } = Astro.props
   }
 
   .t {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: var(--fs-section);
     line-height: 1.15;
     letter-spacing: -0.02em;
     font-weight: 600;

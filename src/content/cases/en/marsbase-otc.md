@@ -12,4 +12,4 @@ product and business development — growing both the product and its communicat
 
 ## Result
 
-<span class="todo">[no numbers at hand — describe in words that the product reached the market and what it left behind]</span>
+Built the marketing team and the communication system around the OTC product: content, community and user activations.

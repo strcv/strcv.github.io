@@ -1,3 +1,4 @@
+import { site, emailHref } from '../site.config'
 import type { Dict } from './types'
 
 // Английский написан заново, а не переведён дословно (docs/tz.md, раздел 3).
@@ -32,9 +33,9 @@ export const en: Dict = {
     headline: 'I turn the users you already have into revenue.',
     lead: 'CRM and retention for crypto and fintech products. In marketing since 2016, in Web3 since 2019. Currently CRM & Retention Marketing Lead at EMCD.',
     actions: [
-      { label: 'Email me', href: 'mailto:insider2la@gmail.com' },
-      { label: 'Telegram', href: null, todo: '[link]', external: true },
-      { label: 'LinkedIn', href: null, todo: '[link]', external: true },
+      { label: 'Email me', href: emailHref },
+      { label: 'Telegram', href: site.telegram, external: true },
+      { label: 'LinkedIn', href: site.linkedin, external: true },
     ],
   },
 
@@ -42,12 +43,12 @@ export const en: Dict = {
     n: '02',
     title: 'Numbers',
     items: [
-      { value: '$10M+', label: 'in deposits from an existing base, driven by CRM and retention' },
+      { value: '$10M+', label: 'in staking deposits at Nominex from an existing user base' },
       { value: '500,000', label: 'contacts in the base I worked with' },
       { value: '300+', label: 'automated campaigns and 1,000+ broadcasts in one year' },
       { value: '120+', label: 'events and 100+ attributes used for segmentation' },
       { value: '10+', label: 'integrations: APIs, webhooks, Make.com' },
-      { value: '9 years', label: 'in marketing, 6 of them in crypto' },
+      { value: 'Since 2016', label: 'in marketing; in Web3 since 2019' },
     ],
     note: 'Numbers come from my most recent roles.',
   },
@@ -62,7 +63,7 @@ export const en: Dict = {
       },
       {
         title: 'Web3: growth, sales, partnerships',
-        body: 'Six years inside crypto — an exchange, an OTC platform, an international crypto publication, a mining ecosystem. B2B sales, business development, work with funds, angels, incubators and grant programmes. Testnets, ambassador programmes, contests and activations. I have been through trading, farming, staking, nodes and sales myself — I speak the product’s language.',
+        body: 'In crypto since 2019 — an exchange, an OTC platform, an international crypto publication, a mining ecosystem. B2B sales, business development, work with funds, angels, incubators and grant programmes. Testnets, ambassador programmes, contests and activations. I have been through trading, farming, staking, nodes and sales myself — I speak the product’s language.',
       },
       {
         title: 'AI in marketing production',
@@ -145,7 +146,7 @@ export const en: Dict = {
         body: 'Regular work with a team or a founder: reviewing decisions, help with hypotheses, access to an industry network.',
       },
     ],
-    cta: { label: 'Discuss a task', href: null, todo: '[Telegram link]', external: true },
+    cta: { label: 'Discuss a task', href: site.telegram, external: true },
   },
 
   cases: {
@@ -154,8 +155,8 @@ export const en: Dict = {
     items: [
       {
         slug: 'depozity-iz-bazy',
-        title: '$10M in deposits from a base that already existed',
-        meta: '[to confirm: company and period]',
+        title: '$10M in staking deposits at Nominex',
+        meta: 'Nominex · staking',
         summary:
           'Segmentation across 100+ attributes and 120+ events, triggered flows, multichannel communication — email, push, in-app, SMS, Intercom.',
       },
@@ -192,8 +193,8 @@ export const en: Dict = {
     ],
     education: 'Lomonosov Moscow State University, political science, 2015 · English C1',
     links: [
-      { label: 'Full CV in Notion', href: null, todo: '[link]', external: true },
-      { label: 'Portfolio in Figma', href: null, todo: '[link]', external: true },
+      { label: 'Full CV in Notion', href: site.cv, external: true },
+      { label: 'Portfolio in Figma', href: site.portfolio, external: true },
     ],
     colPeriod: 'Period',
     colCompany: 'Company',
@@ -209,10 +210,6 @@ export const en: Dict = {
         title: 'ASAP Mail',
         body: 'A service that assembles HTML emails to a company’s brand book. In: a brief, a website, or past campaigns. Out: an email that passes the linter and does not fall apart in Outlook or in dark mode. I build it because I spent nine years laying out and fixing emails by hand.',
       },
-      {
-        title: 'Telegram P2P escrow bot',
-        body: 'My own bot for safe P2P deals. [to confirm: still running, whether to show the link]',
-      },
     ],
   },
 
@@ -221,9 +218,9 @@ export const en: Dict = {
     title: 'Contacts',
     lead: 'Write if you have a product with a base that needs to start working. Or if you need a review, a strategy, or a mentor.',
     items: [
-      { label: 'Telegram', href: null, todo: '[link]', note: 'fastest reply', external: true },
-      { label: 'Email', href: 'mailto:insider2la@gmail.com', note: 'insider2la@gmail.com' },
-      { label: 'LinkedIn', href: null, todo: '[link]', external: true },
+      { label: 'Telegram', href: site.telegram, note: 'fastest reply', external: true },
+      { label: 'Email', href: emailHref, note: site.email },
+      { label: 'LinkedIn', href: site.linkedin, external: true },
     ],
   },
 

@@ -227,7 +227,7 @@ const telegram = [
   .links a {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: var(--tap);
     color: var(--accent-2);
     transition: color var(--dur) var(--ease);
   }
@@ -251,7 +251,7 @@ const telegram = [
   .q {
     grid-column: 1 / -1;
     min-width: 0;
-    min-height: 44px;
+    min-height: var(--tap);
     padding-inline: var(--s4);
     appearance: none;
     background: var(--surface);
@@ -277,7 +277,7 @@ const telegram = [
   .count {
     display: flex;
     align-items: center;
-    min-height: 44px;
+    min-height: var(--tap);
     font-family: var(--mono);
     font-size: var(--fs-xs);
     letter-spacing: 0.08em;
@@ -296,7 +296,7 @@ const telegram = [
     display: inline-flex;
     align-items: center;
     gap: var(--s2);
-    min-height: 44px;
+    min-height: var(--tap);
     padding-inline: var(--s4);
     background: transparent;
     border: 1px solid var(--line);

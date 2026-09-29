@@ -7,7 +7,7 @@ const cases = defineCollection({
   loader: glob({ base: './src/content/cases', pattern: '**/*.md' }),
   schema: z.object({
     title: z.string(),
-    /** Компания и период. Иногда это ещё заглушка вида «[уточнить: …]». */
+    /** Только подтверждённые компания и контекст; период, если известен. */
     meta: z.string().optional(),
     order: z.number().default(100),
   }),

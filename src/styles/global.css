@@ -32,6 +32,18 @@
   --fs-base: 1.0625rem; /* 17 — основной текст, заголовки строк */
   --fs-h1: clamp(1.875rem, 4.5vw, 2.75rem); /* h1 внутренней страницы */
 
+  --tap: 44px;
+  --header-height: 64px;
+  --tile-min: 17rem;
+  --card-min: 18rem;
+  --on-accent: #0b0a1a;
+  --fs-tiny: 0.8125rem;
+  --fs-hero: clamp(2.75rem, 7vw, 4.5rem);
+  --fs-stat: clamp(2rem, 4vw, 2.75rem);
+  --fs-section: clamp(1.5rem, 3vw, 2rem);
+  --fs-error: clamp(2rem, 5vw, 3rem);
+  --hero-glow: radial-gradient(900px 500px at 75% -15%, rgba(124, 107, 255, 0.16), transparent 60%);
+
   --page: 52rem;
   --wide: 68rem;
   --measure: 66ch;
@@ -69,12 +81,11 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 17px;
+  font-size: var(--fs-base);
   line-height: 1.65;
   font-synthesis-weight: none;
   -webkit-font-smoothing: antialiased;
-  /* Страховка от горизонтальной прокрутки на узких экранах. */
-  overflow-x: hidden;
+  overflow-wrap: break-word;
 }
 
 h1,
@@ -143,18 +154,6 @@ svg {
   color: var(--dim);
 }
 
-/* Видимая заглушка: адрес или факт, который владелец ещё не прислал.
-   Специально заметна — раздел 6 ТЗ требует, чтобы было видно, что дописать. */
-.todo {
-  font-family: var(--mono);
-  font-size: 0.8125rem;
-  color: var(--dim);
-  border: 1px dashed var(--line-2);
-  border-radius: var(--s1);
-  padding: 0 var(--s2);
-  white-space: nowrap;
-}
-
 /* ─────────────────────────── кнопки ─────────────────────────── */
 
 .btn {
@@ -162,13 +161,13 @@ svg {
   align-items: center;
   gap: var(--s2);
   /* Цель нажатия на телефоне не меньше 44×44. */
-  min-height: 44px;
+  min-height: var(--tap);
   padding: var(--s2) var(--s4);
   border: 1px solid var(--line-2);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
-  font-size: 0.9375rem;
+  font-size: var(--fs-md);
   font-weight: 500;
   transition: transform var(--dur) var(--ease);
 }
@@ -180,23 +179,13 @@ svg {
 .btn--primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #0b0a1a;
+  color: var(--on-accent);
   font-weight: 600;
 }
 
 .btn--primary:hover {
   background: var(--accent-2);
   border-color: var(--accent-2);
-}
-
-/* Кнопка без адреса: вести ей некуда, поэтому она не ссылка и не кликается. */
-.btn--todo {
-  color: var(--muted);
-  cursor: default;
-}
-
-.btn--todo:hover {
-  transform: none;
 }
 
 /* ─────────────────────────── прочее ─────────────────────────── */
@@ -226,4 +215,13 @@ svg {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Якорь остаётся ниже липкой шапки, включая двухстрочную мобильную версию. */
+html { scroll-padding-top: calc(var(--header-height) + var(--s6)); }
+.btn:active { transform: translateY(0); }
+a:active { opacity: 0.85; }
+@media (max-width: 40rem) {
+  :root { --header-height: 104px; }
+  .wrap { padding-inline: var(--s4); }
 }

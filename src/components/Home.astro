@@ -13,6 +13,13 @@ interface Props {
 
 const { lang } = Astro.props
 const t = dicts[lang]
+const pageSections = [
+  { id: 'stats', section: t.stats },
+  { id: 'principles', section: t.principles },
+  { id: 'services', section: t.services },
+  { id: 'cases', section: t.cases },
+  { id: 'contacts', section: t.contacts },
+]
 ---
 
 <!-- 01. Первый экран -->
@@ -25,10 +32,16 @@ const t = dicts[lang]
     <h1 class="hero__h">{t.hero.headline}</h1>
     <p class="hero__lead">{t.hero.lead}</p>
     <div class="hero__actions">
-      {t.hero.actions.map((link, i) => <ActionLink link={link} primary={i === 0} />)}
+      {t.hero.actions.filter((link) => link.href).map((link, i) => <ActionLink link={link} primary={i === 0} />)}
     </div>
   </div>
 </section>
+
+<nav class="page-nav wrap wrap--wide" aria-label={lang === 'ru' ? 'На этой странице' : 'On this page'}>
+  {pageSections.map(({ id, section }) => (
+    <a href={`#${id}`}><span aria-hidden="true">{section.n}</span> {section.title}</a>
+  ))}
+</nav>
 
 <!-- 02. Цифры -->
 <Section n={t.stats.n} title={t.stats.title} id="stats" wide>
@@ -174,17 +187,11 @@ const t = dicts[lang]
   <p class="cv__edu">{t.experience.education}</p>
   <ul class="cv__links">
     {
-      t.experience.links.map((l) => (
+      t.experience.links.filter((link) => link.href).map((l) => (
         <li>
-          {l.href ? (
-            <a class="ext" href={l.href} rel="noopener" target="_blank">
-              {l.label}
-            </a>
-          ) : (
-            <span class="ext ext--todo">
-              {l.label} <span class="todo">{l.todo}</span>
-            </span>
-          )}
+          <a class="ext" href={l.href} rel="noopener" target="_blank">
+            {l.label}
+          </a>
         </li>
       ))
     }
@@ -211,19 +218,12 @@ const t = dicts[lang]
   <p class="lead services__lead">{t.contacts.lead}</p>
   <ul class="contacts">
     {
-      t.contacts.items.map((l) => (
+      t.contacts.items.filter((link) => link.href).map((l) => (
         <li class="contacts__i">
           <span class="contacts__k dim">{l.label}</span>
-          {l.href ? (
-            <a class="contacts__v" href={l.href} rel="noopener">
-              {l.note ?? l.label}
-            </a>
-          ) : (
-            <>
-              <span class="todo">{l.todo}</span>
-              {l.note && <span class="contacts__n dim">{l.note}</span>}
-            </>
-          )}
+          <a class="contacts__v" href={l.href} rel="noopener">
+            {l.note ?? l.label}
+          </a>
         </li>
       ))
     }
@@ -231,9 +231,26 @@ const t = dicts[lang]
 </Section>
 
 <style>
+  .page-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s6);
+  }
+  .page-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    min-height: var(--tap);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+  .page-nav span { font-family: var(--mono); color: var(--dim); }
+  .page-nav a:hover { color: var(--text); }
+
   /* ─── 01. Первый экран ─── */
 
   .hero {
+    overflow-wrap: anywhere;
     position: relative;
     padding-top: var(--s24);
     padding-bottom: var(--s16);
@@ -245,11 +262,7 @@ const t = dicts[lang]
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(
-      900px 500px at 75% -15%,
-      rgba(124, 107, 255, 0.16),
-      transparent 60%
-    );
+    background: var(--hero-glow);
   }
 
   .hero > :global(.wrap) {
@@ -264,7 +277,7 @@ const t = dicts[lang]
 
   .hero__n {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     color: var(--dim);
     flex: 0 0 auto;
@@ -272,14 +285,15 @@ const t = dicts[lang]
   }
 
   .hero__name {
-    font-size: 1.0625rem;
+    font-size: var(--fs-base);
     font-weight: 600;
     color: var(--muted);
   }
 
   .hero__h {
+    text-wrap: balance;
     margin-top: var(--s4);
-    font-size: clamp(2.75rem, 7vw, 4.5rem);
+    font-size: var(--fs-hero);
     line-height: 1.05;
     letter-spacing: -0.03em;
     font-weight: 650;
@@ -304,7 +318,7 @@ const t = dicts[lang]
   .tiles {
     display: grid;
     /* 17rem, а не меньше: при более узкой колонке «$10 млн+» разрывается пополам. */
-    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--tile-min)), 1fr));
     gap: var(--s4);
   }
 
@@ -324,7 +338,7 @@ const t = dicts[lang]
   }
 
   .tile__v {
-    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-size: var(--fs-stat);
     line-height: 1.1;
     letter-spacing: -0.02em;
     font-weight: 600;
@@ -335,13 +349,13 @@ const t = dicts[lang]
 
   .tile__l {
     color: var(--muted);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
     line-height: 1.5;
   }
 
   .tiles__note {
     margin-top: var(--s4);
-    font-size: 0.875rem;
+    font-size: var(--fs-sm);
   }
 
   /* ─── 03, 04, 06, 09. Текстовые блоки ─── */
@@ -352,7 +366,7 @@ const t = dicts[lang]
   }
 
   .block__t {
-    font-size: 1.0625rem;
+    font-size: var(--fs-base);
     font-weight: 600;
     letter-spacing: -0.01em;
   }
@@ -374,12 +388,12 @@ const t = dicts[lang]
 
   .fit {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min)), 1fr));
     gap: var(--s8) var(--s12);
   }
 
   .fit__t {
-    font-size: 1.0625rem;
+    font-size: var(--fs-base);
     font-weight: 600;
     margin-bottom: var(--s4);
   }
@@ -413,7 +427,7 @@ const t = dicts[lang]
 
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min)), 1fr));
     gap: var(--s4);
   }
 
@@ -437,7 +451,7 @@ const t = dicts[lang]
   }
 
   .card__t {
-    font-size: 1.0625rem;
+    font-size: var(--fs-base);
     font-weight: 600;
     line-height: 1.35;
     letter-spacing: -0.01em;
@@ -445,13 +459,13 @@ const t = dicts[lang]
 
   .card__m {
     font-family: var(--mono);
-    font-size: 0.75rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.04em;
   }
 
   .card__s {
     color: var(--muted);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
     line-height: 1.55;
   }
 
@@ -459,7 +473,7 @@ const t = dicts[lang]
     margin-top: auto;
     padding-top: var(--s3);
     color: var(--accent-2);
-    font-size: 0.875rem;
+    font-size: var(--fs-sm);
   }
 
   /* ─── 08. Опыт ─── */
@@ -467,7 +481,7 @@ const t = dicts[lang]
   .cv {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
   }
 
   .cv td {
@@ -482,7 +496,7 @@ const t = dicts[lang]
 
   .cv__p {
     font-family: var(--mono);
-    font-size: 0.8125rem;
+    font-size: var(--fs-tiny);
     color: var(--dim);
     white-space: nowrap;
     width: 1%;
@@ -500,7 +514,7 @@ const t = dicts[lang]
   .cv__edu {
     margin-top: var(--s6);
     color: var(--muted);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
   }
 
   .cv__links {
@@ -508,19 +522,15 @@ const t = dicts[lang]
     display: flex;
     flex-wrap: wrap;
     gap: var(--s2) var(--s6);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
   }
 
   .ext {
     display: inline-flex;
     align-items: center;
     gap: var(--s2);
-    min-height: 44px;
+    min-height: var(--tap);
     color: var(--accent-2);
-  }
-
-  .ext--todo {
-    color: var(--muted);
   }
 
   /* ─── 10. Контакты ─── */
@@ -535,28 +545,28 @@ const t = dicts[lang]
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s2) var(--s4);
-    min-height: 44px;
+    min-height: var(--tap);
   }
 
   .contacts__k {
     font-family: var(--mono);
-    font-size: 0.75rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     min-width: 8ch;
   }
 
   .contacts__v {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    overflow-wrap: anywhere;
     color: var(--accent-2);
     transition: color var(--dur) var(--ease);
   }
 
   .contacts__v:hover {
     color: var(--text);
-  }
-
-  .contacts__n {
-    font-size: 0.875rem;
   }
 
   /* Заголовки таблицы нужны скринридеру, но не глазу. */

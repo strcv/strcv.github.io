@@ -1,3 +1,4 @@
+import { site, emailHref } from '../site.config'
 import type { Dict } from './types'
 
 // Тексты взяты из docs/tz.md дословно. Переписывать их «покрасивее» нельзя:
@@ -30,9 +31,9 @@ export const ru: Dict = {
     headline: 'Достаю деньги из существующей базы.',
     lead: 'CRM и retention для крипто- и финтех-продуктов. В маркетинге с 2016, в Web3 с 2019. Сейчас — CRM & Retention Marketing Lead в EMCD.',
     actions: [
-      { label: 'Написать', href: 'mailto:insider2la@gmail.com' },
-      { label: 'Telegram', href: null, todo: '[ссылка]', external: true },
-      { label: 'LinkedIn', href: null, todo: '[ссылка]', external: true },
+      { label: 'Написать', href: emailHref },
+      { label: 'Telegram', href: site.telegram, external: true },
+      { label: 'LinkedIn', href: site.linkedin, external: true },
     ],
   },
 
@@ -40,12 +41,12 @@ export const ru: Dict = {
     n: '02',
     title: 'Цифры',
     items: [
-      { value: '$10 млн+', label: 'депозитов из уже существующей базы за счёт CRM и retention' },
+      { value: '$10 млн+', label: 'депозитов в стейкинг Nominex из существующей базы' },
       { value: '500 000', label: 'контактов в базе, с которой работал' },
       { value: '300+', label: 'автоматических кампаний и 1 000+ broadcast за год' },
       { value: '120+', label: 'событий и 100+ атрибутов для сегментации' },
       { value: '10+', label: 'интеграций: API, вебхуки, Make.com' },
-      { value: '9 лет', label: 'в маркетинге, 6 из них в крипте' },
+      { value: 'С 2016', label: 'в маркетинге; в Web3 — с 2019' },
     ],
     note: 'Цифры — по последним местам работы.',
   },
@@ -60,7 +61,7 @@ export const ru: Dict = {
       },
       {
         title: 'Web3: рост, продажи, партнёрства',
-        body: 'Шесть лет внутри крипты — биржа, OTC-платформа, международное крипто-СМИ, майнинг-экосистема. B2B-продажи, развитие бизнеса, работа с фондами, ангелами, инкубаторами и грантовыми программами. Тестнеты, амбассадорские программы, конкурсы и активации. На себе прошёл трейдинг, фарминг, стейкинг, ноды и сейлы — говорю с продуктом на одном языке.',
+        body: 'В крипте с 2019 года — биржа, OTC-платформа, международное крипто-СМИ, майнинг-экосистема. B2B-продажи, развитие бизнеса, работа с фондами, ангелами, инкубаторами и грантовыми программами. Тестнеты, амбассадорские программы, конкурсы и активации. На себе прошёл трейдинг, фарминг, стейкинг, ноды и сейлы — говорю с продуктом на одном языке.',
       },
       {
         title: 'AI в маркетинговом производстве',
@@ -143,7 +144,7 @@ export const ru: Dict = {
         body: 'Регулярная работа с командой или основателем: разбор решений, помощь с гипотезами, доступ к отраслевому нетворку.',
       },
     ],
-    cta: { label: 'Обсудить задачу', href: null, todo: '[ссылка на Telegram]', external: true },
+    cta: { label: 'Обсудить задачу', href: site.telegram, external: true },
   },
 
   cases: {
@@ -152,8 +153,8 @@ export const ru: Dict = {
     items: [
       {
         slug: 'depozity-iz-bazy',
-        title: '$10 млн депозитов из базы, которая уже была',
-        meta: '[уточнить: место и период]',
+        title: '$10 млн депозитов в стейкинг Nominex',
+        meta: 'Nominex · стейкинг',
         summary:
           'Сегментация по 100+ атрибутам и 120+ событиям, триггерные цепочки, мультиканальные коммуникации — Email, Push, In-app, SMS, Intercom.',
       },
@@ -190,8 +191,8 @@ export const ru: Dict = {
     ],
     education: 'МГУ им. Ломоносова, политология, 2015 · английский C1',
     links: [
-      { label: 'Полное CV в Notion', href: null, todo: '[ссылка]', external: true },
-      { label: 'Портфолио в Figma', href: null, todo: '[ссылка]', external: true },
+      { label: 'Полное CV в Notion', href: site.cv, external: true },
+      { label: 'Портфолио в Figma', href: site.portfolio, external: true },
     ],
     colPeriod: 'Период',
     colCompany: 'Компания',
@@ -207,10 +208,6 @@ export const ru: Dict = {
         title: 'ASAP Mail',
         body: 'Сервис, который собирает HTML-письма по брендбуку компании. На вход бриф, сайт или примеры прошлых рассылок; на выходе письмо, прошедшее линтер и не разваливающееся в Outlook и тёмной теме. Делаю потому, что девять лет верстал и правил письма руками.',
       },
-      {
-        title: 'Telegram P2P escrow-бот',
-        body: 'Свой бот для безопасных P2P-сделок. [уточнить: жив ли, показывать ли ссылку]',
-      },
     ],
   },
 
@@ -221,13 +218,12 @@ export const ru: Dict = {
     items: [
       {
         label: 'Telegram',
-        href: null,
-        todo: '[ссылка]',
+        href: site.telegram,
         note: 'отвечаю быстрее всего',
         external: true,
       },
-      { label: 'Почта', href: 'mailto:insider2la@gmail.com', note: 'insider2la@gmail.com' },
-      { label: 'LinkedIn', href: null, todo: '[ссылка]', external: true },
+      { label: 'Почта', href: emailHref, note: site.email },
+      { label: 'LinkedIn', href: site.linkedin, external: true },
     ],
   },
 
