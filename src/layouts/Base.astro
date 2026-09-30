@@ -84,7 +84,7 @@ const ogImage = new URL(lang === 'ru' ? '/og.png' : '/og-en.png', origin)
   <body>
     <a href="#main" class="skip">{dict.skipToContent}</a>
     <Header lang={lang} dict={dict} neutralPath={neutralPath} showLangSwitch={translated} />
-    <main id="main">
+    <main id="main" tabindex="-1">
       <slot />
     </main>
     <Footer dict={dict} />

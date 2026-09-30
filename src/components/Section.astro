@@ -1,22 +1,19 @@
 ---
-// Пронумерованный раздел — главный структурный приём сайта. Номер моноширинный,
-// с ведущим нулём, и он декоративный: для скринридера остаётся только заголовок.
+// Общий раздел с заголовком и разделительной линией.
 
 interface Props {
-  n: string
   title: string
   id: string
   alt?: boolean
   wide?: boolean
 }
 
-const { n, title, id, alt = false, wide = false } = Astro.props
+const { title, id, alt = false, wide = false } = Astro.props
 ---
 
 <section class:list={['section', { 'section--alt': alt }]} id={id}>
   <div class:list={['wrap', { 'wrap--wide': wide }]}>
     <div class="head">
-      <span class="n" aria-hidden="true">{n}</span>
       <h2 class="t">{title}</h2>
     </div>
     <slot />
@@ -34,29 +31,20 @@ const { n, title, id, alt = false, wide = false } = Astro.props
   }
 
   .head {
-    display: flex;
-    align-items: baseline;
-    gap: var(--s4);
     padding-bottom: var(--s4);
     border-bottom: 1px solid var(--line);
     margin-bottom: var(--s8);
   }
 
-  .n {
-    font-family: var(--mono);
-    font-size: 12px;
-    line-height: 1;
-    letter-spacing: 0.08em;
-    color: var(--dim);
-    /* Ширина фиксирована, чтобы заголовки всех разделов начинались по одной линии. */
-    flex: 0 0 auto;
-    min-width: 2.5ch;
-  }
-
   .t {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: var(--fs-section);
     line-height: 1.15;
     letter-spacing: -0.02em;
     font-weight: 600;
+  }
+  @media (max-width: 40rem) {
+    .section { padding-top: var(--s16); }
+    .section--alt { padding-bottom: var(--s16); }
+    .head { margin-bottom: var(--s6); }
   }
 </style>

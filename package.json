@@ -12,12 +12,14 @@
     "dev": "astro dev --port 4321",
     "build": "astro build",
     "preview": "astro preview --port 4321",
-    "typecheck": "astro check"
+    "typecheck": "astro check",
+    "check:site": "python3 scripts/check_site.py"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.6",
     "@astrojs/sitemap": "^3.6.0",
-    "astro": "^5.14.1"
+    "astro": "^5.14.1",
+    "sharp": "0.34.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

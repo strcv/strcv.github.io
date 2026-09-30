@@ -1,8 +1,8 @@
 ---
-// Ссылка, у которой может не быть адреса. Пока владелец не прислал ссылку,
-// это не «битая ссылка», а видимая заглушка — кликнуть по ней нельзя.
+// Не публикуем действие, пока для него нет подтверждённого адреса.
 
 import type { Link } from '../i18n'
+import ContactIcon from './ContactIcon.astro'
 
 interface Props {
   link: Link
@@ -15,19 +15,15 @@ const target = link.external ? '_blank' : undefined
 ---
 
 {
-  link.href ? (
+  link.href && (
     <a
       class:list={['btn', { 'btn--primary': primary }]}
       href={link.href}
       rel={rel}
       target={target}
     >
+      <ContactIcon href={link.href} />
       {link.label}
     </a>
-  ) : (
-    <span class="btn btn--todo">
-      {link.label}
-      <span class="todo">{link.todo}</span>
-    </span>
   )
 }

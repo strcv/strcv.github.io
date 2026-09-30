@@ -1,10 +1,14 @@
 ---
-// Одна длинная главная с пронумерованными разделами 01–10.
+// Одна длинная главная с именованными разделами.
 // Порядок разделов задан в docs/tz.md и меняться не должен.
 // Разметка общая для обоих языков — различаются только словари.
 
+import { Image } from 'astro:assets'
+import portrait from '../assets/owner-portrait.png'
 import { dicts, type Lang, localePath } from '../i18n'
 import ActionLink from './ActionLink.astro'
+import ContactIcon from './ContactIcon.astro'
+import FeatureIcon from './FeatureIcon.astro'
 import Section from './Section.astro'
 
 interface Props {
@@ -13,25 +17,48 @@ interface Props {
 
 const { lang } = Astro.props
 const t = dicts[lang]
+const pageSections = [
+  { id: 'stats', section: t.stats },
+  { id: 'principles', section: t.principles },
+  { id: 'services', section: t.services },
+  { id: 'cases', section: t.cases },
+  { id: 'contacts', section: t.contacts },
+]
 ---
 
 <!-- 01. Первый экран -->
 <section class="hero" id="hero">
   <div class="wrap wrap--wide">
-    <div class="hero__head">
-      <span class="hero__n" aria-hidden="true">01</span>
+    <div class="hero__identity">
       <p class="hero__name">{t.hero.name}</p>
+      <Image
+        class="hero__portrait"
+        src={portrait}
+        alt={t.hero.name}
+        width={192}
+        height={256}
+        format="webp"
+        quality={85}
+        loading="eager"
+        fetchpriority="high"
+      />
+      <h1 class="hero__h">{t.hero.headline}</h1>
     </div>
-    <h1 class="hero__h">{t.hero.headline}</h1>
     <p class="hero__lead">{t.hero.lead}</p>
     <div class="hero__actions">
-      {t.hero.actions.map((link, i) => <ActionLink link={link} primary={i === 0} />)}
+      {t.hero.actions.filter((link) => link.href).map((link, i) => <ActionLink link={link} primary={i === 0} />)}
     </div>
   </div>
 </section>
 
+<nav class="page-nav wrap wrap--wide" aria-label={lang === 'ru' ? 'На этой странице' : 'On this page'}>
+  {pageSections.map(({ id, section }) => (
+    <a href={`#${id}`}>{section.title}</a>
+  ))}
+</nav>
+
 <!-- 02. Цифры -->
-<Section n={t.stats.n} title={t.stats.title} id="stats" wide>
+<Section title={t.stats.title} id="stats" wide>
   <ul class="tiles">
     {
       t.stats.items.map((s) => (
@@ -46,11 +73,12 @@ const t = dicts[lang]
 </Section>
 
 <!-- 03. Что я умею -->
-<Section n={t.skills.n} title={t.skills.title} id="skills" wide>
-  <div class="stack">
+<Section title={t.skills.title} id="skills" wide>
+  <div class="feature-grid">
     {
       t.skills.items.map((item) => (
-        <article class="block">
+        <article class="block feature-card">
+          {item.icon && <span class="feature-card__icon"><FeatureIcon name={item.icon} /></span>}
           <h3 class="block__t">{item.title}</h3>
           <p class="block__b measure">{item.body}</p>
         </article>
@@ -60,7 +88,7 @@ const t = dicts[lang]
 </Section>
 
 <!-- 04. Как я работаю -->
-<Section n={t.principles.n} title={t.principles.title} id="principles" wide>
+<Section title={t.principles.title} id="principles" wide>
   <div class="stack">
     {
       t.principles.items.map((item) => (
@@ -74,7 +102,7 @@ const t = dicts[lang]
 </Section>
 
 <!-- 05. С кем мне по пути -->
-<Section n={t.fit.n} title={t.fit.title} id="fit" wide alt>
+<Section title={t.fit.title} id="fit" wide alt>
   <div class="fit">
     <div>
       <h3 class="fit__t">{t.fit.goodTitle}</h3>
@@ -110,12 +138,13 @@ const t = dicts[lang]
 </Section>
 
 <!-- 06. Со мной можно работать -->
-<Section n={t.services.n} title={t.services.title} id="services" wide>
+<Section title={t.services.title} id="services" wide>
   <p class="lead services__lead">{t.services.lead}</p>
-  <div class="stack">
+  <div class="feature-grid">
     {
       t.services.items.map((item) => (
-        <article class="block">
+        <article class="block feature-card">
+          {item.icon && <span class="feature-card__icon"><FeatureIcon name={item.icon} /></span>}
           <h3 class="block__t">{item.title}</h3>
           <p class="block__b measure">{item.body}</p>
         </article>
@@ -128,7 +157,7 @@ const t = dicts[lang]
 </Section>
 
 <!-- 07. Кейсы -->
-<Section n={t.cases.n} title={t.cases.title} id="cases" wide>
+<Section title={t.cases.title} id="cases" wide>
   <ul class="cards">
     {
       t.cases.items.map((c) => (
@@ -148,7 +177,7 @@ const t = dicts[lang]
 </Section>
 
 <!-- 08. Опыт -->
-<Section n={t.experience.n} title={t.experience.title} id="experience" wide>
+<Section title={t.experience.title} id="experience" wide>
   <table class="cv">
     <caption class="sr">{t.experience.title}</caption>
     <thead class="sr">
@@ -174,17 +203,11 @@ const t = dicts[lang]
   <p class="cv__edu">{t.experience.education}</p>
   <ul class="cv__links">
     {
-      t.experience.links.map((l) => (
+      t.experience.links.filter((link) => link.href).map((l) => (
         <li>
-          {l.href ? (
-            <a class="ext" href={l.href} rel="noopener" target="_blank">
-              {l.label}
-            </a>
-          ) : (
-            <span class="ext ext--todo">
-              {l.label} <span class="todo">{l.todo}</span>
-            </span>
-          )}
+          <a class="ext" href={l.href} rel="noopener" target="_blank">
+            {l.label}
+          </a>
         </li>
       ))
     }
@@ -192,7 +215,7 @@ const t = dicts[lang]
 </Section>
 
 <!-- 09. Пет-проекты -->
-<Section n={t.pets.n} title={t.pets.title} id="pets" wide>
+<Section title={t.pets.title} id="pets" wide>
   <p class="lead services__lead">{t.pets.lead}</p>
   <div class="stack">
     {
@@ -207,23 +230,17 @@ const t = dicts[lang]
 </Section>
 
 <!-- 10. Контакты -->
-<Section n={t.contacts.n} title={t.contacts.title} id="contacts" wide>
+<Section title={t.contacts.title} id="contacts" wide>
   <p class="lead services__lead">{t.contacts.lead}</p>
   <ul class="contacts">
     {
-      t.contacts.items.map((l) => (
+      t.contacts.items.filter((link) => link.href).map((l) => (
         <li class="contacts__i">
           <span class="contacts__k dim">{l.label}</span>
-          {l.href ? (
-            <a class="contacts__v" href={l.href} rel="noopener">
-              {l.note ?? l.label}
-            </a>
-          ) : (
-            <>
-              <span class="todo">{l.todo}</span>
-              {l.note && <span class="contacts__n dim">{l.note}</span>}
-            </>
-          )}
+          <a class="contacts__v" href={l.href} rel="noopener">
+            <ContactIcon href={l.href} />
+            <span>{l.note ?? l.label}</span>
+          </a>
         </li>
       ))
     }
@@ -231,59 +248,87 @@ const t = dicts[lang]
 </Section>
 
 <style>
+  .page-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s6);
+  }
+  .page-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    min-height: var(--tap);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+  .page-nav a:hover { color: var(--text); }
+
   /* ─── 01. Первый экран ─── */
 
   .hero {
+    overflow-wrap: anywhere;
     position: relative;
     padding-top: var(--s24);
     padding-bottom: var(--s16);
   }
 
-  /* Единственный градиент на весь сайт. Больше нигде. */
+  /* Мягкая синяя подсветка первого экрана. */
   .hero::before {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(
-      900px 500px at 75% -15%,
-      rgba(124, 107, 255, 0.16),
-      transparent 60%
-    );
+    background: var(--hero-glow);
   }
 
   .hero > :global(.wrap) {
     position: relative;
   }
 
-  .hero__head {
-    display: flex;
-    align-items: baseline;
+  .hero__identity {
+    display: grid;
+    grid-template-columns: var(--portrait-width) minmax(0, 1fr);
+    grid-template-areas: 'portrait name' 'headline headline';
+    align-items: center;
     gap: var(--s4);
   }
 
-  .hero__n {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    color: var(--dim);
+  .hero__portrait {
+    grid-area: portrait;
+    width: var(--portrait-width);
+    height: auto;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius);
     flex: 0 0 auto;
-    min-width: 2.5ch;
   }
 
   .hero__name {
-    font-size: 1.0625rem;
+    grid-area: name;
+    font-size: var(--fs-base);
     font-weight: 600;
     color: var(--muted);
   }
 
   .hero__h {
-    margin-top: var(--s4);
-    font-size: clamp(2.75rem, 7vw, 4.5rem);
+    grid-area: headline;
+    text-wrap: balance;
+    min-width: 0;
+    font-size: var(--fs-hero);
     line-height: 1.05;
     letter-spacing: -0.03em;
     font-weight: 650;
     max-width: 18ch;
+  }
+
+  @media (max-width: 40rem) {
+    .hero__identity {
+      grid-template-columns: var(--s16) minmax(0, 1fr);
+      grid-template-areas: 'portrait name' 'headline headline';
+    }
+
+    .hero__portrait {
+      width: var(--s16);
+    }
   }
 
   .hero__lead {
@@ -299,12 +344,46 @@ const t = dicts[lang]
     gap: var(--s3);
   }
 
+  @media (max-width: 40rem) {
+    .hero { padding-block: var(--s6) var(--s8); }
+    .hero__identity { row-gap: var(--s6); }
+    .hero__name { color: var(--text); }
+    .hero__h {
+      font-size: var(--fs-hero-mobile);
+      line-height: 1.1;
+      max-width: none;
+    }
+    .hero__lead {
+      margin-top: var(--s4);
+      font-size: var(--s4);
+      line-height: 1.6;
+    }
+    .hero__actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: var(--s6);
+    }
+    .hero__actions :global(.btn) { justify-content: center; }
+    .page-nav {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: var(--s2);
+      padding-bottom: var(--s2);
+    }
+    .page-nav a {
+      flex: 0 0 auto;
+      padding-inline: var(--s3);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+  }
+
   /* ─── 02. Цифры ─── */
 
   .tiles {
     display: grid;
     /* 17rem, а не меньше: при более узкой колонке «$10 млн+» разрывается пополам. */
-    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--tile-min)), 1fr));
     gap: var(--s4);
   }
 
@@ -324,7 +403,7 @@ const t = dicts[lang]
   }
 
   .tile__v {
-    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-size: var(--fs-stat);
     line-height: 1.1;
     letter-spacing: -0.02em;
     font-weight: 600;
@@ -335,13 +414,13 @@ const t = dicts[lang]
 
   .tile__l {
     color: var(--muted);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
     line-height: 1.5;
   }
 
   .tiles__note {
     margin-top: var(--s4);
-    font-size: 0.875rem;
+    font-size: var(--fs-sm);
   }
 
   /* ─── 03, 04, 06, 09. Текстовые блоки ─── */
@@ -352,7 +431,7 @@ const t = dicts[lang]
   }
 
   .block__t {
-    font-size: 1.0625rem;
+    font-size: var(--fs-base);
     font-weight: 600;
     letter-spacing: -0.01em;
   }
@@ -360,6 +439,59 @@ const t = dicts[lang]
   .block__b {
     margin-top: var(--s2);
     color: var(--muted);
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s4);
+  }
+
+  .feature-card {
+    padding: var(--s8);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .feature-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--s12);
+    height: var(--s12);
+    margin-bottom: var(--s6);
+    color: var(--accent-2);
+    background: var(--accent-soft);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__identity, .hero__lead, .hero__actions {
+      animation: intro-enter var(--dur-enter) var(--ease) both;
+    }
+    .hero__lead { animation-delay: var(--delay-intro); }
+    .hero__actions { animation-delay: calc(var(--delay-intro) * 2); }
+    .feature-card__icon {
+      transition: transform var(--dur) var(--ease);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .feature-card:hover .feature-card__icon {
+        transform: translateY(calc(var(--s1) * -1));
+      }
+    }
+  }
+
+  @keyframes intro-enter {
+    from { opacity: 0; transform: translateY(var(--s2)); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 40rem) {
+    .feature-grid { grid-template-columns: minmax(0, 1fr); }
+    .feature-card { padding: var(--s6); }
+    .feature-card__icon { margin-bottom: var(--s4); }
   }
 
   .services__lead {
@@ -374,12 +506,12 @@ const t = dicts[lang]
 
   .fit {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min)), 1fr));
     gap: var(--s8) var(--s12);
   }
 
   .fit__t {
-    font-size: 1.0625rem;
+    font-size: var(--fs-base);
     font-weight: 600;
     margin-bottom: var(--s4);
   }
@@ -413,7 +545,7 @@ const t = dicts[lang]
 
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min)), 1fr));
     gap: var(--s4);
   }
 
@@ -437,7 +569,7 @@ const t = dicts[lang]
   }
 
   .card__t {
-    font-size: 1.0625rem;
+    font-size: var(--fs-base);
     font-weight: 600;
     line-height: 1.35;
     letter-spacing: -0.01em;
@@ -445,13 +577,13 @@ const t = dicts[lang]
 
   .card__m {
     font-family: var(--mono);
-    font-size: 0.75rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.04em;
   }
 
   .card__s {
     color: var(--muted);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
     line-height: 1.55;
   }
 
@@ -459,7 +591,7 @@ const t = dicts[lang]
     margin-top: auto;
     padding-top: var(--s3);
     color: var(--accent-2);
-    font-size: 0.875rem;
+    font-size: var(--fs-sm);
   }
 
   /* ─── 08. Опыт ─── */
@@ -467,7 +599,7 @@ const t = dicts[lang]
   .cv {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
   }
 
   .cv td {
@@ -482,7 +614,7 @@ const t = dicts[lang]
 
   .cv__p {
     font-family: var(--mono);
-    font-size: 0.8125rem;
+    font-size: var(--fs-tiny);
     color: var(--dim);
     white-space: nowrap;
     width: 1%;
@@ -500,7 +632,7 @@ const t = dicts[lang]
   .cv__edu {
     margin-top: var(--s6);
     color: var(--muted);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
   }
 
   .cv__links {
@@ -508,19 +640,15 @@ const t = dicts[lang]
     display: flex;
     flex-wrap: wrap;
     gap: var(--s2) var(--s6);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
   }
 
   .ext {
     display: inline-flex;
     align-items: center;
     gap: var(--s2);
-    min-height: 44px;
+    min-height: var(--tap);
     color: var(--accent-2);
-  }
-
-  .ext--todo {
-    color: var(--muted);
   }
 
   /* ─── 10. Контакты ─── */
@@ -535,28 +663,30 @@ const t = dicts[lang]
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s2) var(--s4);
-    min-height: 44px;
+    min-height: var(--tap);
   }
 
   .contacts__k {
     font-family: var(--mono);
-    font-size: 0.75rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     min-width: 8ch;
   }
 
   .contacts__v {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    max-width: 100%;
+    min-height: var(--tap);
+    overflow-wrap: anywhere;
     color: var(--accent-2);
     transition: color var(--dur) var(--ease);
   }
 
   .contacts__v:hover {
     color: var(--text);
-  }
-
-  .contacts__n {
-    font-size: 0.875rem;
   }
 
   /* Заголовки таблицы нужны скринридеру, но не глазу. */
@@ -598,5 +728,9 @@ const t = dicts[lang]
     .cv__p {
       margin-bottom: var(--s1);
     }
+  }
+  @media (max-width: 40rem) {
+    .tile { padding: var(--s4); }
+    .stack { gap: var(--s6); }
   }
 </style>

@@ -21,6 +21,8 @@ export function otherLang(lang: Lang): Lang {
  */
 export function localePath(neutralPath: string, lang: Lang): string {
   const path = neutralPath.startsWith('/') ? neutralPath : `/${neutralPath}`
+  // Astro сохраняет только корневую 404 как файл для GitHub Pages.
+  if (path === '/404.html') return lang === 'ru' ? '/404.html' : '/en/404/'
   if (lang === defaultLang) return path
   return path === '/' ? '/en/' : `/en${path}`
 }

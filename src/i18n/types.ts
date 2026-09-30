@@ -1,12 +1,10 @@
 // Тип словаря один на оба языка: если в en.ts не хватит ключа или появится лишний,
 // это упадёт на `pnpm typecheck`, а не тихо уедет в продакшн полупустой страницей.
 
-/** Ссылка, адрес которой владелец ещё не прислал. `todo` показывается на странице. */
+/** Ссылка. Пока адрес не подтверждён, href = null и ссылка не публикуется. */
 export interface Link {
   label: string
   href: string | null
-  /** Видимая заглушка вместо адреса: «[ссылка]». Показывается, когда href пуст. */
-  todo?: string
   /** Приписка рядом со ссылкой: «отвечаю быстрее всего». */
   note?: string
   external?: boolean
@@ -18,6 +16,7 @@ export interface Stat {
 }
 
 export interface Titled {
+  icon?: 'review' | 'solve' | 'campaign' | 'crm' | 'network' | 'automation' | 'retention' | 'strategy' | 'production' | 'integration'
   title: string
   body: string
 }
@@ -58,7 +57,6 @@ export interface Dict {
 
   nav: {
     home: string
-    write: string
     langLabel: string
     menuLabel: string
     /** Меню у каждого языка своё: раздела может не быть в переводе. Пустое — меню нет. */
@@ -73,26 +71,22 @@ export interface Dict {
   }
 
   stats: {
-    n: string
     title: string
     items: Stat[]
     note: string
   }
 
   skills: {
-    n: string
     title: string
     items: Titled[]
   }
 
   principles: {
-    n: string
     title: string
     items: Titled[]
   }
 
   fit: {
-    n: string
     title: string
     goodTitle: string
     badTitle: string
@@ -101,7 +95,6 @@ export interface Dict {
   }
 
   services: {
-    n: string
     title: string
     lead: string
     items: Titled[]
@@ -109,7 +102,6 @@ export interface Dict {
   }
 
   cases: {
-    n: string
     title: string
     items: CaseTeaser[]
     more: string
@@ -117,7 +109,6 @@ export interface Dict {
   }
 
   experience: {
-    n: string
     title: string
     rows: ExperienceRow[]
     education: string
@@ -129,14 +120,12 @@ export interface Dict {
   }
 
   pets: {
-    n: string
     title: string
     lead: string
     items: Titled[]
   }
 
   contacts: {
-    n: string
     title: string
     lead: string
     items: Link[]

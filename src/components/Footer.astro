@@ -1,4 +1,5 @@
 ---
+import { site, emailHref } from '../site.config'
 import type { Dict } from '../i18n'
 
 interface Props {
@@ -12,7 +13,7 @@ const year = new Date().getFullYear()
 <footer class="foot">
   <div class="wrap wrap--wide bar">
     <span>© {year} {dict.footer.note}</span>
-    <a href="mailto:insider2la@gmail.com">insider2la@gmail.com</a>
+    <a href={emailHref}>{site.email}</a>
   </div>
 </footer>
 
@@ -22,7 +23,7 @@ const year = new Date().getFullYear()
     border-top: 1px solid var(--line);
     padding-block: var(--s8);
     color: var(--dim);
-    font-size: 0.9375rem;
+    font-size: var(--fs-md);
   }
 
   .bar {
@@ -34,6 +35,9 @@ const year = new Date().getFullYear()
   }
 
   .bar a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
     transition: color var(--dur) var(--ease);
   }
 

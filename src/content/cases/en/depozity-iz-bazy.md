@@ -1,6 +1,6 @@
 ---
-title: $10M in deposits from a base that already existed
-meta: '[to confirm: company and period]'
+title: $10M in staking deposits at Nominex
+meta: Nominex · staking
 order: 1
 ---
 
@@ -11,4 +11,4 @@ communication — email, push, in-app, SMS, Intercom.
 
 ## Result
 
-More than $10M in deposits from the existing user base.
+More than $10M in staking deposits at Nominex from the existing user base.
