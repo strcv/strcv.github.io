@@ -3,21 +3,18 @@
    нужно новое значение — сначала добавь его в шкалу здесь. */
 
 :root {
-  --bg: #08090c; /* фон, не чистый чёрный */
-  --bg-2: #0e1015; /* подложка секции */
-  --surface: #13151b; /* карточка, плитка */
-  --line: #1e212a;
-  --line-2: #2c3140; /* граница в hover */
-  --text: #edeef2; /* не чистый белый */
-  --muted: #9ba1ae;
-  /* Метки, номера разделов, периоды. В ТЗ здесь стоял #666D7C, но он даёт
-     3.83:1 на фоне и 3.51:1 на плитке — ниже 4.5:1, которых требует чек-лист
-     приёмки того же ТЗ. Взят ближайший тон, проходящий на всех трёх фонах:
-     5.17 на --bg, 4.94 на --bg-2, 4.74 на --surface. */
-  --dim: #7b8292;
-  --accent: #7c6bff;
-  --accent-2: #9b8eff; /* hover — светлее */
-  --accent-soft: #171633;
+  --bg: #080e1b; /* фон, не чистый чёрный */
+  --bg-2: #0b1424; /* подложка секции */
+  --surface: #101d31; /* карточка, плитка */
+  --line: #22314a;
+  --line-2: #365070; /* граница в hover */
+  --text: #edf3ff; /* не чистый белый */
+  --muted: #a7b6cd;
+  /* Второстепенные подписи: читаются на всех трёх фоновых поверхностях. */
+  --dim: #8798b1;
+  --accent: #6b9fff;
+  --accent-2: #a3c4ff; /* hover — светлее */
+  --accent-soft: #142a4b;
   --ok: #4ade80; /* галочки в разделе 05 */
   --no: #f87171; /* крестики в разделе 05 */
 
@@ -37,14 +34,14 @@
   --header-height: 64px;
   --tile-min: 17rem;
   --card-min: 18rem;
-  --on-accent: #0b0a1a;
+  --on-accent: #081322;
   --fs-tiny: 0.8125rem;
   --fs-hero: clamp(2.75rem, 7vw, 4.5rem);
   --fs-hero-mobile: clamp(2rem, 8.5vw, 2.5rem);
   --fs-stat: clamp(2rem, 4vw, 2.75rem);
   --fs-section: clamp(1.5rem, 3vw, 2rem);
   --fs-error: clamp(2rem, 5vw, 3rem);
-  --hero-glow: radial-gradient(900px 500px at 75% -15%, rgba(124, 107, 255, 0.16), transparent 60%);
+  --hero-glow: radial-gradient(900px 500px at 75% -15%, rgba(69, 127, 255, 0.14), transparent 60%);
   --portrait-width: 5rem; /* Небольшой портрет рядом с именем. */
 
   --page: 52rem;
@@ -65,6 +62,8 @@
   --radius-lg: 16px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --dur: 180ms;
+  --dur-enter: 320ms;
+  --delay-intro: 60ms;
 
   color-scheme: dark;
 }

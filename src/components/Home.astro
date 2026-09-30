@@ -8,6 +8,7 @@ import portrait from '../assets/owner-portrait.png'
 import { dicts, type Lang, localePath } from '../i18n'
 import ActionLink from './ActionLink.astro'
 import ContactIcon from './ContactIcon.astro'
+import FeatureIcon from './FeatureIcon.astro'
 import Section from './Section.astro'
 
 interface Props {
@@ -73,10 +74,11 @@ const pageSections = [
 
 <!-- 03. Что я умею -->
 <Section title={t.skills.title} id="skills" wide>
-  <div class="stack">
+  <div class="feature-grid">
     {
       t.skills.items.map((item) => (
-        <article class="block">
+        <article class="block feature-card">
+          {item.icon && <span class="feature-card__icon"><FeatureIcon name={item.icon} /></span>}
           <h3 class="block__t">{item.title}</h3>
           <p class="block__b measure">{item.body}</p>
         </article>
@@ -138,10 +140,11 @@ const pageSections = [
 <!-- 06. Со мной можно работать -->
 <Section title={t.services.title} id="services" wide>
   <p class="lead services__lead">{t.services.lead}</p>
-  <div class="stack">
+  <div class="feature-grid">
     {
       t.services.items.map((item) => (
-        <article class="block">
+        <article class="block feature-card">
+          {item.icon && <span class="feature-card__icon"><FeatureIcon name={item.icon} /></span>}
           <h3 class="block__t">{item.title}</h3>
           <p class="block__b measure">{item.body}</p>
         </article>
@@ -269,7 +272,7 @@ const pageSections = [
     padding-bottom: var(--s16);
   }
 
-  /* Единственный градиент на весь сайт. Больше нигде. */
+  /* Мягкая синяя подсветка первого экрана. */
   .hero::before {
     content: '';
     position: absolute;
@@ -436,6 +439,59 @@ const pageSections = [
   .block__b {
     margin-top: var(--s2);
     color: var(--muted);
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s4);
+  }
+
+  .feature-card {
+    padding: var(--s8);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .feature-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--s12);
+    height: var(--s12);
+    margin-bottom: var(--s6);
+    color: var(--accent-2);
+    background: var(--accent-soft);
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__identity, .hero__lead, .hero__actions {
+      animation: intro-enter var(--dur-enter) var(--ease) both;
+    }
+    .hero__lead { animation-delay: var(--delay-intro); }
+    .hero__actions { animation-delay: calc(var(--delay-intro) * 2); }
+    .feature-card__icon {
+      transition: transform var(--dur) var(--ease);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .feature-card:hover .feature-card__icon {
+        transform: translateY(calc(var(--s1) * -1));
+      }
+    }
+  }
+
+  @keyframes intro-enter {
+    from { opacity: 0; transform: translateY(var(--s2)); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 40rem) {
+    .feature-grid { grid-template-columns: minmax(0, 1fr); }
+    .feature-card { padding: var(--s6); }
+    .feature-card__icon { margin-bottom: var(--s4); }
   }
 
   .services__lead {

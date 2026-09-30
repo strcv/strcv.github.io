@@ -16,6 +16,7 @@ export interface Stat {
 }
 
 export interface Titled {
+  icon?: 'review' | 'solve' | 'campaign' | 'crm' | 'network' | 'automation' | 'retention' | 'strategy' | 'production' | 'integration'
   title: string
   body: string
 }

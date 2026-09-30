@@ -11,9 +11,9 @@ export const en: Dict = {
   dir: 'ltr',
 
   meta: {
-    title: 'Alexander Startsev — CRM and retention for crypto and fintech',
+    title: 'Alexander Startsev — CRM and lifecycle marketing',
     description:
-      'I turn the users you already have into revenue. CRM and retention for crypto and fintech products. In marketing since 2016, in Web3 since 2019. Currently CRM & Retention Marketing Lead at EMCD.',
+      'Retention, CRM strategy, campaign production and integrations. Hands-on help with CRM and lifecycle marketing.',
     ogAlt: 'Alexander Startsev — I turn the users you already have into revenue',
   },
 
@@ -32,8 +32,8 @@ export const en: Dict = {
 
   hero: {
     name: 'Alexander Startsev',
-    headline: 'I turn the users you already have into revenue.',
-    lead: 'CRM and retention for crypto and fintech products. In marketing since 2016, in Web3 since 2019. Currently CRM & Retention Marketing Lead at EMCD.',
+    headline: 'Let’s get your CRM and lifecycle marketing moving',
+    lead: 'CRM geek, vibe coder, former marathon runner. Dad to two princesses.',
     actions: [
       { label: 'Telegram', href: site.telegram, external: true },
       { label: 'LinkedIn', href: site.linkedin, external: true },
@@ -57,14 +57,32 @@ export const en: Dict = {
     title: 'What I do',
     items: [
       {
+        icon: 'review',
+        title: 'I review copy and design',
+        body: 'I check the message, structure and fit with the brief, then give specific edits for the copy and layout.',
+      },
+      {
+        icon: 'solve',
+        title: 'I solve complicated problems',
+        body: 'Communication, coordination or technical issues. I work out what is wrong, get the right people involved and put a solution together.',
+      },
+      {
+        icon: 'campaign',
+        title: 'I write specs and build promo campaigns',
+        body: 'Technical specs for developers and briefs for marketers. I plan the offer, messages and sequence of touchpoints.',
+      },
+      {
+        icon: 'crm',
         title: 'CRM and retention',
         body: 'I build the communication system from scratch: segmentation, triggered flows, email, push, in-app, SMS, Intercom. Not "set up a newsletter" — wiring marketing into the product, analytics and content so the base earns again.',
       },
       {
+        icon: 'network',
         title: 'Web3: growth, sales, partnerships',
         body: 'In crypto since 2019 — an exchange, an OTC platform, an international crypto publication, a mining ecosystem. B2B sales, business development, work with funds, angels, incubators and grant programmes. Testnets, ambassador programmes, contests and activations. I have been through trading, farming, staking, nodes and sales myself — I speak the product’s language.',
       },
       {
+        icon: 'automation',
         title: 'AI in marketing production',
         body: 'Claude and ChatGPT are built into the workflow: copy, design, code, automation. This is not an experiment — 300+ campaigns over the past year were made this way.',
       },
@@ -74,6 +92,10 @@ export const en: Dict = {
   principles: {
     title: 'How I work',
     items: [
+      {
+        title: 'I work fast.',
+        body: 'I get up to speed quickly, put together a working version and refine it with feedback.',
+      },
       {
         title: 'Fewer approvals, more ownership.',
         body: 'I take the decision and answer for the result. That is faster than a week of email with three departments, and fairer to everyone involved.',
@@ -122,24 +144,28 @@ export const en: Dict = {
   },
 
   services: {
-    title: 'Working with me',
-    lead: 'Alongside my main job I take on outside work — where an outside view is needed, and where the experience is expensive to build yourself.',
+    title: 'I can help with',
+    lead: 'Bring me in for a specific task or the whole job, from strategy to launch.',
     items: [
       {
-        title: 'Consultation.',
-        body: 'We go through your product, your base and your communications. You leave with what to do first, and what not to do at all.',
+        icon: 'retention',
+        title: 'Retention',
+        body: 'Onboarding, triggered flows and reactivation. I help users find value in your product and come back for more.',
       },
       {
-        title: 'Go-to-market strategy.',
-        body: 'For crypto and fintech products: positioning, channels, partnerships, launch sequence.',
+        icon: 'strategy',
+        title: 'CRM strategy',
+        body: 'I look at your product, users and current messages. Then work out who to contact, what to say, when to send it and how to measure it.',
       },
       {
-        title: 'Campaign and CJM design.',
-        body: 'User journey map, segments, flows, events and attributes — taken to the point where it can be handed over for execution.',
+        icon: 'production',
+        title: 'CRM campaign production',
+        body: 'Email, push, in-app and SMS. I handle the idea, copy, email coding, setup, testing and send.',
       },
       {
-        title: 'Mentoring and advisory.',
-        body: 'Regular work with a team or a founder: reviewing decisions, help with hypotheses, access to an industry network.',
+        icon: 'integration',
+        title: 'Integrations',
+        body: 'I connect your CRM to your product, analytics and other tools. From ready-made connectors to complex integrations using APIs, webhooks and custom code.',
       },
     ],
     cta: { label: 'Discuss a task', href: site.telegram, external: true },
